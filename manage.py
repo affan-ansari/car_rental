@@ -3,7 +3,7 @@
 import os
 import sys
 
-# HELLO AFFAN !!!! GAY 
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'car_rental.settings')
