@@ -12,3 +12,11 @@ six==1.15.0
 sqlparse==0.4.1
 toml==0.10.2
 wrapt==1.12.1
+
+# hello janis time to work.
+-> Update car model, make tables.
+-> Create Driver table.
+-> AddDriver function in views.
+-> Map URLS.
+-> Make views.
+-> Make driver form.
