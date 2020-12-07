@@ -1,5 +1,5 @@
 from django import forms
-from .models import Car
+from .models import Car,Driver
 
 class RegisterCarForm(forms.ModelForm):
     class Meta:
@@ -9,3 +9,11 @@ class RegisterCarForm(forms.ModelForm):
             'engine_capacity', 'seats', 'color',
             'transmission', 'fuel'
         ]
+
+class RegisterDriverForm(forms.ModelForm):
+    class Meta:
+        model = Driver
+        fields = [
+            'CNIC','first_name','last_name',
+            'email', 'contact_number', 'address']
+

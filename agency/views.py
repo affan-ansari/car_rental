@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from .models import Car
 from .business_logic.rental_agency import car_list
-from .forms import RegisterCarForm
+from .forms import RegisterCarForm,RegisterDriverForm
 
 def home(request):
     context = {
@@ -23,4 +23,12 @@ def register_car(request):
     return render(request,'agency/register_car.html',{'form': form})
 
 def register_driver(request):
-    pass
+    if request.method == 'POST':
+        form = RegisterDriverForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Driver added successfully!')
+            return redirect('agency-register-driver')
+    else:
+        form = RegisterDriverForm()
+    return render(request,'agency/register_driver.html',{'form': form})

@@ -28,3 +28,14 @@ class Car(models.Model):
 
     def __str__(self):
         return self.make + ' ' + str(self.model)
+
+class Driver(models.Model):
+    CNIC = models.CharField(max_length=15)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+    contact_number = models.CharField(max_length=15)
+    address = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
