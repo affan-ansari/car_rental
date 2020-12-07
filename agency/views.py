@@ -9,7 +9,7 @@ def home(request):
     context = {
         'cars': car_list()
     }
-    return render(request, 'agency/base.html', context)
+    return render(request, 'agency/home.html', context)
 
 def register_car(request):
     if request.method == 'POST':
