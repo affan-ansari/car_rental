@@ -21,3 +21,6 @@ def register_car(request):
     else:
         form = RegisterCarForm()
     return render(request,'agency/register_car.html',{'form': form})
+
+def register_driver(request):
+    pass
