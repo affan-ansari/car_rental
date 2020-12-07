@@ -1,0 +1,9 @@
+{% extends "agency/base.html" %}
+
+{% block content %}
+    {% for car in cars %}
+        <h1> {{ car.manufacturer }} </h1>
+        <h2> {{ car.name }} </h2>
+        <h3> {{ car.year }} </h3>
+    {% endfor %}
+{% endblock content %}
