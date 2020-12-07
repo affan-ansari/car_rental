@@ -6,6 +6,7 @@ def car_list():
 
 def add_car():
     pass
+    #   this is a new change
     # TAKE INPUT USING FORMS
     # IF FORM IS VALID SAVE FORM
     # ELSE GO TO REGISTER CAR PAGE AGAIN
