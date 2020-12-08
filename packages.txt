@@ -20,3 +20,8 @@ wrapt==1.12.1
 -> Map URLS.
 -> Make views.
 -> Make driver form.
+
+search for curl
+
+curl --header "Content-Type: application/json"
+-X POST http://127.0.0.1:8000/api/token/refresh/ --data '{"username:'ali'"}'
