@@ -16,4 +16,3 @@ class RegisterDriverForm(forms.ModelForm):
         fields = [
             'CNIC','first_name','last_name',
             'email', 'contact_number', 'address']
-
