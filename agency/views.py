@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
+from django.http import HttpResponse
 from .business_logic.agency import Agency
 from .models import CAR
 from .forms import RegisterCarForm,RegisterDriverForm
@@ -14,7 +15,7 @@ def home(request):
 
 def register_car(request):
     if request.method == 'POST':
-        form = RegisterCarForm(request.POST)
+        form = RegisterCarForm(request.POST, request.FILES)
         if form.is_valid():
             reg_no = form.cleaned_data.get("reg_no")
             make = form.cleaned_data.get("make")
@@ -25,10 +26,11 @@ def register_car(request):
             color = form.cleaned_data.get("color")
             transmission = form.cleaned_data.get("transmission")
             fuel = form.cleaned_data.get("fuel")
+            image = form.cleaned_data.get("image")
 
             controller.add_car(
                 reg_no,make,model,body_type,engine_capacity,
-                seats,color,transmission,fuel
+                seats,color,transmission,fuel,image
             )
             messages.success(request, f'Car added successfully!')
             return redirect('agency-register-car')
@@ -38,7 +40,7 @@ def register_car(request):
 
 # def register_car(request):
 #     if request.method == 'POST':
-#         form = RegisterCarForm(request.POST)
+#         form = RegisterCarForm(request.POST, request.FILES)
 #         if form.is_valid():
 #             form.save()
 #             messages.success(request, f'Car added successfully!')

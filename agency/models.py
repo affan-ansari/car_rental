@@ -1,4 +1,5 @@
 from django.db import models
+from PIL import Image
 
 class CAR(models.Model):
     BODY_CHOICES = (
@@ -25,6 +26,7 @@ class CAR(models.Model):
     color = models.CharField(max_length=100)
     transmission = models.CharField(max_length=100,choices=TRANSMISSION_CHOICES)
     fuel = models.CharField(max_length=100,choices=FUEL_CHOICES)
+    image = models.ImageField(default='default_car.png', upload_to='car_pics')
 
     def __str__(self):
         return self.make + ' ' + str(self.model)
@@ -36,6 +38,6 @@ class DRIVER(models.Model):
     email = models.EmailField(max_length=100)
     contact_number = models.CharField(max_length=15)
     address = models.CharField(max_length=100)
-    
+
     def __str__(self):
         return self.first_name + ' ' + self.last_name

@@ -7,7 +7,7 @@ class RegisterCarForm(forms.ModelForm):
         fields = [
             'reg_no','make', 'model', 'body_type',
             'engine_capacity', 'seats', 'color',
-            'transmission', 'fuel'
+            'transmission', 'fuel', 'image'
         ]
 
 class RegisterDriverForm(forms.ModelForm):
