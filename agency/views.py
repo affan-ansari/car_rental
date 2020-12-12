@@ -12,7 +12,6 @@ def home(request):
     }
     return render(request, 'agency/home.html', context)
 
-# firstname= form.cleaned_data.get("first_name")
 def register_car(request):
     if request.method == 'POST':
         form = RegisterCarForm(request.POST)
