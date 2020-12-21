@@ -1,0 +1,14 @@
+{% extends "agency/base.html" %}
+{% load static %}
+{% block content %}
+    <div class="col-md-16">
+        <div class="content-section">
+            <h3>Manage Cars</h3>
+            <ul class="list-group">
+                <a class="btn btn-primary btn-lg btn-block" href="{% url 'agency-register-car' %}" role="button">Add Car</a>
+                <a class="btn btn-primary btn-lg btn-block" href="#" role="button">Update Car</a>
+                <a class="btn btn-danger btn-lg btn-block" href="{% url 'agency-delete-car' %}" role="button">Delete Car</a>
+            </ul>
+        </div>
+    </div>
+{% endblock content %}
