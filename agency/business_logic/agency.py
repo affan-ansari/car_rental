@@ -1,11 +1,19 @@
 from .car_list import CarList
+from .driver_list import DriverList
 
 class Agency:
     def __init__(self):
         self.cars = CarList()
+        self.drivers = DriverList()
 
     def add_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image):
         self.cars.add_car(reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image)
 
     def delete_car(self,reg_no):
         return self.cars.delete_car(reg_no)
+
+    def add_driver(self, CNIC,first_name,last_name,email,contact_number,address):
+        self.drivers.add_driver(CNIC,first_name,last_name,email,contact_number,address)
+
+    def delete_driver(self,CNIC):
+        return self.drivers.delete_driver(CNIC)

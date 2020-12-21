@@ -10,8 +10,11 @@ class RegisterCarForm(forms.ModelForm):
             'transmission', 'fuel', 'image'
         ]
 
-class SearchCarForm(forms.Form):
+class DeleteCarForm(forms.Form):
     reg_no = forms.CharField(label="Registration Number", max_length=25)
+
+class DeleteDriverForm(forms.Form):
+    CNIC = forms.CharField(label="CNIC", max_length=15)
 
 class RegisterDriverForm(forms.ModelForm):
     class Meta:
