@@ -1,0 +1,11 @@
+{% extends "agency/base.html" %}
+{% load static %}
+{% block content %}
+    <div class="col-md-8">
+        <div class = "content-section">
+            <img class="img-thumbnail" src = "{{ object.image.url }}"/>
+            <h2> {{ object.make }} </h2>
+            <h4>{{ car.model }}</h4>
+        </div>
+    </div>
+{% endblock content %}

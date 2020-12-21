@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from PIL import Image
 
 class CAR(models.Model):
@@ -30,6 +31,9 @@ class CAR(models.Model):
 
     def __str__(self):
         return self.make + ' ' + str(self.model)
+
+    def get_absolute_url(self):
+        return reverse('car-detail', kwargs={'pk': self.reg_no})
 
 class DRIVER(models.Model):
     CNIC = models.CharField(max_length=15)
