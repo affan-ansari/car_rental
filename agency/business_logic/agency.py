@@ -12,8 +12,11 @@ class Agency:
     def delete_car(self,reg_no):
         return self.cars.delete_car(reg_no)
 
-    def add_driver(self, CNIC,first_name,last_name,email,contact_number,address):
+    def add_driver(self,CNIC,first_name,last_name,email,contact_number,address):
         self.drivers.add_driver(CNIC,first_name,last_name,email,contact_number,address)
 
     def delete_driver(self,CNIC):
         return self.drivers.delete_driver(CNIC)
+
+    def update_driver(self,CNIC,first_name,last_name,email,contact_number,address):
+        self.drivers.update_driver(CNIC,first_name,last_name,email,contact_number,address)

@@ -10,4 +10,5 @@ urlpatterns = [
     path('manage_drivers', views.manage_drivers, name='agency-manage-drivers'),
     path('register_driver', views.register_driver, name='agency-register-driver'),
     path('delete_driver', views.delete_driver, name='agency-delete-driver'),
+    path('update_driver',views.update_driver,name='agency-update-driver'),
 ]

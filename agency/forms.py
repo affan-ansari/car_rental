@@ -22,3 +22,13 @@ class RegisterDriverForm(forms.ModelForm):
         fields = [
             'CNIC','first_name','last_name',
             'email', 'contact_number', 'address']
+
+class DriverUpdateForm(forms.ModelForm):
+    CNIC =  forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    first_name =  forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    last_name =  forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    class Meta:
+        model = DRIVER
+        fields = [
+            'CNIC','first_name','last_name',
+            'email', 'contact_number', 'address']

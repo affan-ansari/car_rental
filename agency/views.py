@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import DetailView
 from .business_logic.agency import Agency
-from .models import CAR
-from .forms import RegisterCarForm,RegisterDriverForm,DeleteCarForm,DeleteDriverForm
+from .models import CAR,DRIVER
+from .forms import RegisterCarForm,RegisterDriverForm,DeleteCarForm,DeleteDriverForm,DriverUpdateForm
 
 controller = Agency()
 
@@ -80,6 +81,46 @@ def register_driver(request):
     else:
         form = RegisterDriverForm()
     return render(request,'agency/register_driver.html',{'form': form})
+
+def update_driver(request):
+    if request.method == 'POST':
+        if 'search' in request.POST:
+            search_form = DeleteDriverForm(request.POST)
+            if search_form.is_valid():
+                CNIC = search_form.cleaned_data["CNIC"]
+                try:
+                    searched_driver = DRIVER.objects.get(CNIC=CNIC)
+                    update_form = DriverUpdateForm(instance=searched_driver)
+                    context = {
+                        'update_form': update_form,
+                        'searched': True,
+                    }
+                    messages.success(request, f'Driver found!')
+                    return render(request,'agency/update_driver.html',context)
+                except ObjectDoesNotExist:
+                    messages.warning(request, f'Driver not found!')
+                    return redirect('agency-update-driver')
+
+        elif 'update' in request.POST:
+            update_form = DriverUpdateForm(request.POST)
+            if update_form.is_valid():
+                CNIC = update_form.cleaned_data.get("CNIC")
+                first_name = update_form.cleaned_data.get("first_name")
+                last_name = update_form.cleaned_data.get("last_name")
+                email = update_form.cleaned_data.get("email")
+                contact_number = update_form.cleaned_data.get("contact_number")
+                address = update_form.cleaned_data.get("address")
+
+                controller.update_driver(CNIC,first_name,last_name,email,contact_number,address)
+                messages.success(request, f"Driver was updated!")
+                return redirect('agency-update-driver')
+    else:
+        search_form = DeleteDriverForm()
+        context = {
+            'search_form': search_form,
+            'searched': False,
+        }
+        return render(request,'agency/update_driver.html',context)
 
 def delete_driver(request):
     if request.method == 'POST':
