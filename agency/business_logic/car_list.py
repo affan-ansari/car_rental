@@ -15,6 +15,7 @@ class CarList:
         )
         new_car.save()
     def delete_car(self,reg_no):
+        reg_no = reg_no.upper()
         try:
             searched_car = CAR.objects.get(reg_no=reg_no)
             searched_car.delete()

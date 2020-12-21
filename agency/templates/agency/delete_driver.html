@@ -6,11 +6,14 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4"> Delete Car </legend>
-                <div class="alert alert-danger" role="alert">
-                    Car will be deleted without confirmation!
+                <legend class="border-bottom mb-4" > Delete Driver </legend>
+                <div class="alert alert-info border-bottom mb-4" role="alert">
+                    CNIC : XXXXX-XXXXXXX-X
                 </div>
                 {{ form|crispy }}
+                <div class="alert alert-danger" role="alert">
+                    Driver will be deleted without confirmation!
+                </div>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-danger" type="submit"> Delete</button>

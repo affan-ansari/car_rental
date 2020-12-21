@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.views.generic import DetailView
 from .business_logic.agency import Agency
 from .models import CAR
-from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm
+from .forms import RegisterCarForm,RegisterDriverForm,DeleteCarForm,DeleteDriverForm
 
 controller = Agency()
 
@@ -18,6 +18,9 @@ def manage_cars(request):
 
 def manage_drivers(request):
     return render(request, 'agency/manage_drivers.html')
+
+class CarDetailView(DetailView):
+    model = CAR
 
 def register_car(request):
     if request.method == 'POST':
@@ -46,7 +49,7 @@ def register_car(request):
 
 def delete_car(request):
     if request.method == 'POST':
-        form = SearchCarForm(request.POST)
+        form = DeleteCarForm(request.POST)
         if form.is_valid():
             reg_no = form.cleaned_data["reg_no"]
             is_deleted = controller.delete_car(reg_no)
@@ -56,19 +59,51 @@ def delete_car(request):
                 messages.info(request, f'Car does not exist!')
             return redirect ('agency-delete-car')
     else:
-        form = SearchCarForm()
+        form = DeleteCarForm()
     return render(request,'agency/delete_car.html',{'form': form})
 
-class CarDetailView(DetailView):
-    model = CAR
 
 def register_driver(request):
     if request.method == 'POST':
         form = RegisterDriverForm(request.POST)
         if form.is_valid():
-            form.save()
+            CNIC = form.cleaned_data.get("CNIC")
+            first_name = form.cleaned_data.get("first_name")
+            last_name = form.cleaned_data.get("last_name")
+            email = form.cleaned_data.get("email")
+            contact_number = form.cleaned_data.get("contact_number")
+            address = form.cleaned_data.get("address")
+
+            controller.add_driver(CNIC,first_name,last_name,email,contact_number,address)
             messages.success(request, f'Driver added successfully!')
             return redirect('agency-register-driver')
     else:
         form = RegisterDriverForm()
     return render(request,'agency/register_driver.html',{'form': form})
+
+def delete_driver(request):
+    if request.method == 'POST':
+        form = DeleteDriverForm(request.POST)
+        if form.is_valid():
+            CNIC = form.cleaned_data["CNIC"]
+            is_deleted = controller.delete_driver(CNIC)
+            if is_deleted == True:
+                messages.success(request, f'Driver deleted successfully!')
+            else:
+                messages.info(request, f'Driver does not exist!')
+            return redirect ('agency-delete-driver')
+    else:
+        form = DeleteDriverForm()
+    return render(request,'agency/delete_driver.html',{'form': form})
+
+
+# def register_driver(request):
+#     if request.method == 'POST':
+#         form = RegisterDriverForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, f'Driver added successfully!')
+#             return redirect('agency-register-driver')
+#     else:
+#         form = RegisterDriverForm()
+#     return render(request,'agency/register_driver.html',{'form': form})
