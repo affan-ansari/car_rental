@@ -6,10 +6,10 @@ class DriverList:
     def __init__(self):
         pass
 
-    def add_driver(self, CNIC,first_name,last_name,email,contact_number,address):
+    def add_driver(self, CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         new_driver = DRIVER(
             CNIC=CNIC,first_name=first_name,last_name=last_name,
-            email=email,contact_number=contact_number,address=address
+            email=email,contact_number=contact_number,address=address,hourly_rate=hourly_rate
         )
         new_driver.save()
 
@@ -21,7 +21,7 @@ class DriverList:
         except ObjectDoesNotExist:
             return False
 
-    def update_driver(self,CNIC,first_name,last_name,email,contact_number,address):
+    def update_driver(self,CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         update_driver = DRIVER.objects.get(CNIC=CNIC)
         update_driver.CNIC = CNIC
         update_driver.first_name = first_name
@@ -29,4 +29,5 @@ class DriverList:
         update_driver.email = email
         update_driver.contact_number = contact_number
         update_driver.address = address
+        hourly_rate = hourly_rate
         update_driver.save()

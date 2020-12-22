@@ -19,9 +19,7 @@ class SearchDriverForm(forms.Form):
 class RegisterDriverForm(forms.ModelForm):
     class Meta:
         model = DRIVER
-        fields = [
-            'CNIC','first_name','last_name',
-            'email', 'contact_number', 'address']
+        fields = '__all__'
 
 class DriverUpdateForm(forms.ModelForm):
     CNIC =  forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
@@ -29,9 +27,7 @@ class DriverUpdateForm(forms.ModelForm):
     last_name =  forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
     class Meta:
         model = DRIVER
-        fields = [
-            'CNIC','first_name','last_name',
-            'email', 'contact_number', 'address']
+        fields = '__all__'
 
 class CarUpdateForm(forms.ModelForm):
     reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))

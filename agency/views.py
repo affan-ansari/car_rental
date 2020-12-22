@@ -27,8 +27,8 @@ class CarDetailView(DetailView):
 class DriverListView(ListView):
     model = DRIVER
     template_name= 'agency/drivers_list.html'
-    context_object_name = 'drivers' 
-    
+    context_object_name = 'drivers'
+
 class DriverDetailView(DetailView):
      model = DRIVER
 
@@ -89,8 +89,10 @@ def update_car(request,pk):
             transmission = update_form.cleaned_data.get("transmission")
             fuel = update_form.cleaned_data.get("fuel")
             image = update_form.cleaned_data.get("image")
+            accident_details = update_form.cleaned_data.get("accident_details")
+            available = update_form.cleaned_data.get("available")
 
-            controller.update_car(reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image)
+            controller.update_car(reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image,accident_details,available)
             messages.success(request,f'Car Updated Succuessfully')
             return redirect('agency-home')
     else:
@@ -123,8 +125,9 @@ def register_driver(request):
             email = form.cleaned_data.get("email")
             contact_number = form.cleaned_data.get("contact_number")
             address = form.cleaned_data.get("address")
+            hourly_rate = form.cleaned_data.get("hourly_rate")
 
-            controller.add_driver(CNIC,first_name,last_name,email,contact_number,address)
+            controller.add_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)
             messages.success(request, f'Driver added successfully!')
             return redirect('agency-register-driver')
     else:

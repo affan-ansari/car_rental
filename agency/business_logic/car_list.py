@@ -24,7 +24,7 @@ class CarList:
         except ObjectDoesNotExist:
             return False
 
-    def update_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image):
+    def update_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image,accident_details,available):
         update_car = CAR.objects.get(reg_no=reg_no)
         update_car.reg_no = reg_no
         update_car.make = make
@@ -36,4 +36,6 @@ class CarList:
         update_car.transmission = transmission
         update_car.fuel = fuel
         update_car.image = image
+        update_car.accident_details = accident_details
+        update_car.available = available
         update_car.save()
