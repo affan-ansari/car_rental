@@ -8,6 +8,7 @@ urlpatterns = [
     path('register_car', views.register_car, name='agency-register-car'),
     path('delete_car', views.delete_car, name='agency-delete-car'),
     path('car/<str:pk>/', views.CarDetailView.as_view(), name='car-detail'),
+    path('car/<str:pk>/update/', views.update_car, name='agency-update-car'),
     path('search_car',views.search_car,name='agency-search-car'),
 
     path('manage_drivers', views.manage_drivers, name='agency-manage-drivers'),

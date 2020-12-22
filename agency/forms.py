@@ -34,17 +34,10 @@ class DriverUpdateForm(forms.ModelForm):
             'email', 'contact_number', 'address']
 
 class CarUpdateForm(forms.ModelForm):
-    # reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
-    # make = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
-    # model = forms.IntegerField(widget=forms.NumberInput(attrs={'readonly':'True'}))
-    # body_type = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    make = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    model = forms.IntegerField(widget=forms.NumberInput(attrs={'readonly':'True'}))
+    body_type = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
     class Meta:
         model = CAR
-        fields = [
-            'reg_no','make', 'model', 'body_type',
-            'engine_capacity', 'seats', 'color',
-            'transmission', 'fuel'
-        ]
-        widgets = {
-            'reg_no': forms.HiddenInput(),
-        }
+        fields = '__all__'

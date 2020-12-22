@@ -65,8 +65,30 @@ def search_car(request):
         search_form = SearchCarForm()
         return render(request,'agency/search_car.html',{'search_form': search_form})
 
-def update_car(request):
-    pass
+def update_car(request,pk):
+    searched_car = CAR.objects.get(reg_no=pk)
+    print(searched_car.make)
+    if request.method == 'POST':
+        update_form = CarUpdateForm(request.POST, request.FILES, instance=searched_car)
+        if update_form.is_valid():
+            reg_no = update_form.cleaned_data.get("reg_no")
+            make = update_form.cleaned_data.get("make")
+            model = update_form.cleaned_data.get("model")
+            body_type = update_form.cleaned_data.get("body_type")
+            engine_capacity = update_form.cleaned_data.get("engine_capacity")
+            seats = update_form.cleaned_data.get("seats")
+            color = update_form.cleaned_data.get("color")
+            transmission = update_form.cleaned_data.get("transmission")
+            fuel = update_form.cleaned_data.get("fuel")
+            image = update_form.cleaned_data.get("image")
+
+            controller.update_car(reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image)
+            messages.success(request,f'Car Updated Succuessfully')
+            return redirect('agency-home')
+    else:
+        update_form = CarUpdateForm(instance=searched_car)
+        context = {'update_form': update_form}
+        return render(request,'agency/update_car.html',context )
 
 def delete_car(request):
     if request.method == 'POST':
