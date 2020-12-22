@@ -36,7 +36,7 @@ class CAR(models.Model):
         return reverse('car-detail', kwargs={'pk': self.reg_no})
 
 class DRIVER(models.Model):
-    CNIC = models.CharField(max_length=15)
+    CNIC = models.CharField(max_length=15, primary_key=True, default="")
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)

@@ -20,6 +20,7 @@ class DriverList:
             return True
         except ObjectDoesNotExist:
             return False
+
     def update_driver(self,CNIC,first_name,last_name,email,contact_number,address):
         update_driver = DRIVER.objects.get(CNIC=CNIC)
         update_driver.CNIC = CNIC
