@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView
+from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
 from .models import CAR,DRIVER
 from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
@@ -23,6 +23,14 @@ def manage_drivers(request):
 
 class CarDetailView(DetailView):
     model = CAR
+
+class DriverListView(ListView):
+    model = DRIVER
+    template_name= 'agency/drivers_list.html'
+    context_object_name = 'drivers' 
+    
+class DriverDetailView(DetailView):
+     model = DRIVER
 
 def register_car(request):
     if request.method == 'POST':

@@ -1,0 +1,13 @@
+
+{% extends "agency/base.html" %}
+{% load static %}
+{% block content %}
+    {% for driver in drivers %}
+    <div class="col-md-8">
+        <div class = "content-section">
+            <h2><a href="{% url 'driver-detail' driver.CNIC%}">{{ driver.first_name }} {{ driver.last_name }}</a></h2>
+            <h4>{{ driver.contact_number }}</h4>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock content %}
