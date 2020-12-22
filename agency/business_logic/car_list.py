@@ -14,6 +14,7 @@ class CarList:
             seats=seats,color=color,transmission=transmission,fuel=fuel,image=image
         )
         new_car.save()
+
     def delete_car(self,reg_no):
         reg_no = reg_no.upper()
         try:
@@ -23,3 +24,16 @@ class CarList:
         except ObjectDoesNotExist:
             return False
 
+    def update_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image):
+        update_car = CAR.objects.get(reg_no=reg_no)
+        update_car.reg_no = reg_no
+        update_car.make = make
+        update_car.model = model
+        update_car.body_type = body_type
+        update_car.engine_capacity = engine_capacity
+        update_car.seats = seats
+        update_car.color = color
+        update_car.transmission = transmission
+        update_car.fuel = fuel
+        update_car.image = image
+        update_car.save()

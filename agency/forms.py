@@ -10,10 +10,10 @@ class RegisterCarForm(forms.ModelForm):
             'transmission', 'fuel', 'image'
         ]
 
-class DeleteCarForm(forms.Form):
+class SearchCarForm(forms.Form):
     reg_no = forms.CharField(label="Registration Number", max_length=25)
 
-class DeleteDriverForm(forms.Form):
+class SearchDriverForm(forms.Form):
     CNIC = forms.CharField(label="CNIC", max_length=15)
 
 class RegisterDriverForm(forms.ModelForm):
@@ -32,3 +32,12 @@ class DriverUpdateForm(forms.ModelForm):
         fields = [
             'CNIC','first_name','last_name',
             'email', 'contact_number', 'address']
+
+class CarUpdateForm(forms.ModelForm):
+    reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    make = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    model = forms.IntegerField(widget=forms.NumberInput(attrs={'readonly':'True'}))
+    body_type = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    class Meta:
+        model = CAR
+        fields = '__all__'
