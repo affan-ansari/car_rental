@@ -1,5 +1,5 @@
 from django import forms
-from .models import CAR,DRIVER
+from .models import CAR,DRIVER,BOOKING
 
 class RegisterCarForm(forms.ModelForm):
     class Meta:
@@ -37,3 +37,8 @@ class CarUpdateForm(forms.ModelForm):
     class Meta:
         model = CAR
         fields = '__all__'
+
+class BookCarForm(forms.ModelForm):
+    class Meta:
+        model = BOOKING
+        fields = ['start_date_time','end_date_time','pickup_location','is_driver_needed']

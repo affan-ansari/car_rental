@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from PIL import Image
-
+from .business_logic.car import Car
 class CAR(models.Model):
     BODY_CHOICES = (
         ('SDN', 'SEDAN'),
@@ -48,3 +48,14 @@ class DRIVER(models.Model):
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
+
+class BOOKING(models.Model):
+    allocated_car = models.CharField(max_length=25)
+    allocated_driver = models.CharField(max_length=25)
+    start_date_time = models.DateTimeField()
+    end_date_time = models.DateTimeField()
+    pickup_location = models.TextField(blank=True, default='')
+    is_driver_needed = models.BooleanField()
+
+    def __str__(self):
+        return 'Booking:' + str(self.id) + self.allocated_car

@@ -5,7 +5,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
 from .models import CAR,DRIVER
-from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
+# from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
+from . import forms
 
 controller = Agency()
 
@@ -34,7 +35,7 @@ class DriverDetailView(DetailView):
 
 def register_car(request):
     if request.method == 'POST':
-        form = RegisterCarForm(request.POST, request.FILES)
+        form = forms.RegisterCarForm(request.POST, request.FILES)
         if form.is_valid():
             reg_no = form.cleaned_data.get("reg_no")
             make = form.cleaned_data.get("make")
@@ -54,12 +55,12 @@ def register_car(request):
             messages.success(request, f'Car added successfully!')
             return redirect('agency-register-car')
     else:
-        form = RegisterCarForm()
+        form = forms.RegisterCarForm()
     return render(request,'agency/register_car.html',{'form': form})
 
 def search_car(request):
     if request.method == 'POST':
-        search_form = SearchCarForm(request.POST)
+        search_form = forms.SearchCarForm(request.POST)
         if search_form.is_valid():
             reg_no = search_form.cleaned_data["reg_no"]
             try:
@@ -70,14 +71,13 @@ def search_car(request):
                 messages.warning(request, f'Car not found!')
                 return redirect('agency-search-car')
     else:
-        search_form = SearchCarForm()
+        search_form = forms.SearchCarForm()
         return render(request,'agency/search_car.html',{'search_form': search_form})
 
 def update_car(request,pk):
     searched_car = CAR.objects.get(reg_no=pk)
-    print(searched_car.make)
     if request.method == 'POST':
-        update_form = CarUpdateForm(request.POST, request.FILES, instance=searched_car)
+        update_form = forms.CarUpdateForm(request.POST, request.FILES, instance=searched_car)
         if update_form.is_valid():
             reg_no = update_form.cleaned_data.get("reg_no")
             make = update_form.cleaned_data.get("make")
@@ -96,13 +96,32 @@ def update_car(request,pk):
             messages.success(request,f'Car Updated Succuessfully')
             return redirect('agency-home')
     else:
-        update_form = CarUpdateForm(instance=searched_car)
+        update_form = forms.CarUpdateForm(instance=searched_car)
         context = {'update_form': update_form}
         return render(request,'agency/update_car.html',context )
 
+def book_car(request,pk):
+    selected_car = CAR.objects.get(reg_no=pk)
+    if request.method == 'POST':
+        book_form = forms.BookCarForm(request.POST)
+        if book_form.is_valid():
+            messages.success(request,f'Car Booked Succuessfully')
+            return redirect('car-detail',pk)
+        else:
+            messages.warning(request,f'Validation error')
+            return redirect('agency-book-car',pk)
+
+    else:
+        book_form = forms.BookCarForm()
+        context = {
+            'car': selected_car,
+            'book_form': book_form
+        }
+        return render(request,'agency/book_car.html',context)
+
 def delete_car(request):
     if request.method == 'POST':
-        form = SearchCarForm(request.POST)
+        form = forms.SearchCarForm(request.POST)
         if form.is_valid():
             reg_no = form.cleaned_data["reg_no"]
             is_deleted = controller.delete_car(reg_no)
@@ -112,12 +131,12 @@ def delete_car(request):
                 messages.info(request, f'Car does not exist!')
             return redirect ('agency-delete-car')
     else:
-        form = SearchCarForm()
+        form = forms.SearchCarForm()
     return render(request,'agency/delete_car.html',{'form': form})
 
 def register_driver(request):
     if request.method == 'POST':
-        form = RegisterDriverForm(request.POST)
+        form = forms.RegisterDriverForm(request.POST)
         if form.is_valid():
             CNIC = form.cleaned_data.get("CNIC")
             first_name = form.cleaned_data.get("first_name")
@@ -131,7 +150,7 @@ def register_driver(request):
             messages.success(request, f'Driver added successfully!')
             return redirect('agency-register-driver')
     else:
-        form = RegisterDriverForm()
+        form = forms.RegisterDriverForm()
     return render(request,'agency/register_driver.html',{'form': form})
 
 def update_driver(request):
@@ -139,7 +158,7 @@ def update_driver(request):
 
 def delete_driver(request):
     if request.method == 'POST':
-        form = SearchDriverForm(request.POST)
+        form = forms.SearchDriverForm(request.POST)
         if form.is_valid():
             CNIC = form.cleaned_data["CNIC"]
             is_deleted = controller.delete_driver(CNIC)
@@ -149,5 +168,5 @@ def delete_driver(request):
                 messages.info(request, f'Driver does not exist!')
             return redirect ('agency-delete-driver')
     else:
-        form = SearchDriverForm()
+        form = forms.SearchDriverForm()
     return render(request,'agency/delete_driver.html',{'form': form})
