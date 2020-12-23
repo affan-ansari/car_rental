@@ -13,4 +13,4 @@ Home shows only Available cars.
 Date time checks.... STARTDATETIME < ENDDATETIME
 During booking, check DATE TIME if car available. For driver you can say that drivers all occupied.
 Driver booked too on same timeline for car.
-Payment... (Leave for now....)
+Payment... (Leave for now.....)
