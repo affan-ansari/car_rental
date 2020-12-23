@@ -19,8 +19,13 @@ class CarList:
         reg_no = reg_no.upper()
         try:
             searched_car = CAR.objects.get(reg_no=reg_no)
-            searched_car.delete()
-            return True
+            # searched_car.delete()
+            if searched_car.available == False:
+                return False
+            else:
+                searched_car.available = False
+                searched_car.save()
+                return True
         except ObjectDoesNotExist:
             return False
 
@@ -39,3 +44,17 @@ class CarList:
         update_car.accident_details = accident_details
         update_car.available = available
         update_car.save()
+
+    def get_cars(self):
+        cars = CAR.objects.filter(available=True)
+        return cars
+
+    def get_car(self,reg_no):
+        try:
+            searched_car = CAR.objects.get(reg_no=reg_no)
+            if searched_car.available == False:
+                raise Exception(f'{reg_no} was deleted!')
+            else:
+                return searched_car
+        except ObjectDoesNotExist:
+            raise Exception(f'{reg_no} does not exist!')

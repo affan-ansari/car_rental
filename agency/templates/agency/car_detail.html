@@ -6,6 +6,7 @@
             <img class="img-thumbnail" src = "{{ object.image.url }}"/>
             <h2> {{ object.make }} </h2>
             <h4>{{ object.model }}</h4>
+            <h4>{{ object.reg_no }}</h4>
             {% if user.is_superuser %}
                 <div>
                     <a class="btn btn-primary" href="{% url 'agency-update-car' object.reg_no %}"> Update </a>

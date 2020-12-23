@@ -27,6 +27,6 @@ class Agency:
 
     def book_car(self,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed):
         self.bookings.create_booking(allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
-    
+
     # def delete_booking(self,book_id):
     #     return self.bookings.delete_booking(book_id)

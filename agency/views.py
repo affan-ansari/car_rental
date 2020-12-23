@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
@@ -12,13 +13,17 @@ controller = Agency()
 
 def home(request):
     context = {
-        'cars': CAR.objects.filter(available=True)#Cars which are not deleted.
+        'cars': controller.cars.get_cars()#Cars which are not deleted.
     }
     return render(request, 'agency/home.html', context)
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def manage_cars(request):
     return render(request, 'agency/manage_cars.html')
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def manage_drivers(request):
     return render(request, 'agency/manage_drivers.html')
 
@@ -35,13 +40,16 @@ class DriverDetailView(DetailView):
 
 class BookingsDetailsView(DetailView):
      model = BOOKING
-     
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def BookingsView(request):
     bookings = BOOKING.objects.all()
     context = {'bookings':bookings}
     return render(request, 'agency/bookings_list.html',context)
 
-
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def register_car(request):
     if request.method == 'POST':
         form = forms.RegisterCarForm(request.POST, request.FILES)
@@ -73,16 +81,18 @@ def search_car(request):
         if search_form.is_valid():
             reg_no = search_form.cleaned_data["reg_no"]
             try:
-                searched_car = CAR.objects.get(reg_no=reg_no)
+                searched_car = controller.cars.get_car(reg_no)
                 messages.success(request, f'Car found!')
                 return HttpResponseRedirect("car/{reg_no}/".format(reg_no= searched_car.reg_no))
-            except ObjectDoesNotExist:
-                messages.warning(request, f'Car not found!')
+            except Exception as exc:
+                messages.warning(request, f'{exc}')
                 return redirect('agency-search-car')
     else:
         search_form = forms.SearchCarForm()
         return render(request,'agency/search_car.html',{'search_form': search_form})
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def update_car(request,pk):
     searched_car = CAR.objects.get(reg_no=pk)
     if request.method == 'POST':
@@ -109,6 +119,8 @@ def update_car(request,pk):
         context = {'update_form': update_form}
         return render(request,'agency/update_car.html',context )
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def search_driver(request):
     if request.method == 'POST':
         search_form = forms.SearchDriverForm(request.POST)
@@ -125,8 +137,8 @@ def search_driver(request):
         search_form = forms.SearchDriverForm()
         return render(request,'agency/search_driver.html',{'search_form': search_form})
 
-
-
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def update_driver(request,pk):
     searched_driver = DRIVER.objects.get(CNIC=pk )
     if request.method == 'POST':
@@ -148,17 +160,14 @@ def update_driver(request,pk):
         context = {'update_form': update_form}
         return render(request,'agency/update_driver.html',context )
 
-
+@login_required
+@user_passes_test(lambda u: u.is_superuser == False)
 def book_car(request,pk):
     selected_car = CAR.objects.get(reg_no=pk)
     if request.method == 'POST':
         book_form = forms.BookCarForm(request.POST)
-        #book_form = forms.BookCarForm(request.POST, request.FILES,instance = selected_car)
         if book_form.is_valid():
-            #book_form.cleaned_data.get()
-            #allocated_car= book_form.cleaned_data.get("allocated_car")
             allocated_car = selected_car
-            # allocated_driver= book_form.cleaned_data.get("allocated_driver")
             start_date_time= book_form.cleaned_data.get("start_date_time")
             end_date_time= book_form.cleaned_data.get("end_date_time")
             pickup_location= book_form.cleaned_data.get("pickup_location")
@@ -180,6 +189,8 @@ def book_car(request,pk):
         }
         return render(request,'agency/book_car.html',context)
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_car(request):
     if request.method == 'POST':
         form = forms.SearchCarForm(request.POST)
@@ -195,6 +206,8 @@ def delete_car(request):
         form = forms.SearchCarForm()
     return render(request,'agency/delete_car.html',{'form': form})
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def register_driver(request):
     if request.method == 'POST':
         form = forms.RegisterDriverForm(request.POST)
@@ -214,6 +227,8 @@ def register_driver(request):
         form = forms.RegisterDriverForm()
     return render(request,'agency/register_driver.html',{'form': form})
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_driver(request):
     if request.method == 'POST':
         form = forms.SearchDriverForm(request.POST)

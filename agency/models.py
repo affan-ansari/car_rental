@@ -52,8 +52,8 @@ class DRIVER(models.Model):
 class BOOKING(models.Model):
     #allocated_car = models.CharField(max_length=25)
     #allocated_driver = models.CharField(max_length=25)
-    allocated_car = models.ForeignKey(CAR,null=True,on_delete=models.SET_NULL)
-    allocated_driver = models.ForeignKey(DRIVER,null=True,on_delete=models.SET_NULL)
+    allocated_car = models.ForeignKey(CAR,null=True,on_delete=models.PROTECT)
+    allocated_driver = models.ForeignKey(DRIVER,null=True,on_delete=models.PROTECT)
     start_date_time = models.DateTimeField()
     end_date_time = models.DateTimeField()
     pickup_location = models.TextField(blank=True, default='')
