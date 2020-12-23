@@ -39,6 +39,12 @@ class CarUpdateForm(forms.ModelForm):
         fields = '__all__'
 
 class BookCarForm(forms.ModelForm):
+    #reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    # make = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    # model = forms.IntegerField(widget=forms.NumberInput(attrs={'readonly':'True'}))
+    # body_type = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
     class Meta:
         model = BOOKING
-        fields = ['start_date_time','end_date_time','pickup_location','is_driver_needed']
+        #fields = ['start_date_time','end_date_time','pickup_location','is_driver_needed']
+        fields = '__all__'
+        exclude = ['allocated_car','allocated_driver']

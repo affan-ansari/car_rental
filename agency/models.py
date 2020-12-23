@@ -45,17 +45,20 @@ class DRIVER(models.Model):
     contact_number = models.CharField(max_length=15)
     address = models.CharField(max_length=100)
     hourly_rate = models.PositiveIntegerField()
-
+    available = models.BooleanField(default=True)
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
 class BOOKING(models.Model):
-    allocated_car = models.CharField(max_length=25)
-    allocated_driver = models.CharField(max_length=25)
+    #allocated_car = models.CharField(max_length=25)
+    #allocated_driver = models.CharField(max_length=25)
+    allocated_car = models.ForeignKey(CAR,null=True,on_delete=models.SET_NULL)
+    allocated_driver = models.ForeignKey(DRIVER,null=True,on_delete=models.SET_NULL)
     start_date_time = models.DateTimeField()
     end_date_time = models.DateTimeField()
     pickup_location = models.TextField(blank=True, default='')
     is_driver_needed = models.BooleanField()
 
     def __str__(self):
-        return 'Booking:' + str(self.id) + self.allocated_car
+        #return 'Booking:' + str(self.id) + self.allocated_car
+        return 'Booking:' + str(self.id)

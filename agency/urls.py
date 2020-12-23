@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import DriverListView
+from .views import BookingsDetailsView, DriverListView
 from . import views
 
 urlpatterns = [
@@ -9,7 +9,7 @@ urlpatterns = [
     path('register_car', views.register_car, name='agency-register-car'),
     path('delete_car', views.delete_car, name='agency-delete-car'),
     path('car/<str:pk>/', views.CarDetailView.as_view(), name='car-detail'),
-    path('car/<str:pk>/update/<str:id>', views.update_car, name='agency-update-car'),
+    path('car/<str:pk>/update/', views.update_car, name='agency-update-car'),
     path('car/<str:pk>/book/', views.book_car, name='agency-book-car'),
     path('search_car',views.search_car,name='agency-search-car'),
 
@@ -18,5 +18,8 @@ urlpatterns = [
     path('manage_drivers', views.manage_drivers, name='agency-manage-drivers'),
     path('register_driver', views.register_driver, name='agency-register-driver'),
     path('delete_driver', views.delete_driver, name='agency-delete-driver'),
+
+    path('booking/<str:pk>/',BookingsDetailsView.as_view(),name='booking-detail'),
+    path('bookings',views.BookingsView,name='agency-bookings-list'),
 ]
 

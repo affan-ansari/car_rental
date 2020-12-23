@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
-from .models import CAR,DRIVER
+from .models import CAR,DRIVER,BOOKING
 # from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
 from . import forms
 
@@ -32,6 +32,15 @@ class DriverListView(ListView):
 
 class DriverDetailView(DetailView):
      model = DRIVER
+
+class BookingsDetailsView(DetailView):
+     model = BOOKING
+     
+def BookingsView(request):
+    bookings = BOOKING.objects.all()
+    context = {'bookings':bookings}
+    return render(request, 'agency/bookings_list.html',context)
+
 
 def register_car(request):
     if request.method == 'POST':
@@ -104,7 +113,17 @@ def book_car(request,pk):
     selected_car = CAR.objects.get(reg_no=pk)
     if request.method == 'POST':
         book_form = forms.BookCarForm(request.POST)
+        #book_form = forms.BookCarForm(request.POST, request.FILES,instance = selected_car)
         if book_form.is_valid():
+            #book_form.cleaned_data.get()
+            #allocated_car= book_form.cleaned_data.get("allocated_car")
+            allocated_car = selected_car
+            # allocated_driver= book_form.cleaned_data.get("allocated_driver")
+            start_date_time= book_form.cleaned_data.get("start_date_time")
+            end_date_time= book_form.cleaned_data.get("end_date_time")
+            pickup_location= book_form.cleaned_data.get("pickup_location")
+            is_driver_needed= book_form.cleaned_data.get("is_driver_needed")
+            controller.book_car(allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
             messages.success(request,f'Car Booked Succuessfully')
             return redirect('car-detail',pk)
         else:
@@ -113,6 +132,7 @@ def book_car(request,pk):
 
     else:
         book_form = forms.BookCarForm()
+        # book_form = forms.BookCarForm(instance = selected_car)
         context = {
             'car': selected_car,
             'book_form': book_form
