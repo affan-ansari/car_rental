@@ -12,7 +12,7 @@ controller = Agency()
 
 def home(request):
     context = {
-        'cars': CAR.objects.all()
+        'cars': CAR.objects.filter(available=True)#Cars which are not deleted.
     }
     return render(request, 'agency/home.html', context)
 
@@ -164,6 +164,7 @@ def book_car(request,pk):
             pickup_location= book_form.cleaned_data.get("pickup_location")
             is_driver_needed= book_form.cleaned_data.get("is_driver_needed")
             controller.book_car(allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
+            #Put try except for Exception (if date time not available driver).
             messages.success(request,f'Car Booked Succuessfully')
             return redirect('car-detail',pk)
         else:

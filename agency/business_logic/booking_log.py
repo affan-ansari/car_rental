@@ -10,14 +10,17 @@ class BookingLog:
     
     def create_booking(self,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed):
         allocated_driver = None
-        if is_driver_needed == True:
-            allocated_driver = DRIVER.objects.filter(available = True).first()
-            try:    
-                allocated_driver.available = False
-                allocated_driver.save()
-            except:
-                pass
-            
+        raise Exception("Affan gay")
+        #Check if driver available on those selected Dates.....
+        #if is_driver_needed == True:
+            #allocated_driver = DRIVER.objects.filter(available = True).first()
+            #try:    
+                #allocated_driver.available = False
+                #allocated_driver.save()
+            #except:
+               # pass
+        #allocated_car.available = False
+        #allocated_car.save()    
         new_booking = BOOKING (
         allocated_car=allocated_car,
         allocated_driver=allocated_driver,
