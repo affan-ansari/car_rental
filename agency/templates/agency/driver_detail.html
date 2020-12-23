@@ -8,7 +8,12 @@
             <h4>{{ driver.email }}</h4>
             <h4>{{ driver.CNIC }}</h4>
             <h4>{{ driver.address }}</h4>
-            
+            <h4>Rate = {{ driver.hourly_rate }}</h4>
+            {% if user.is_superuser %}
+                <div>
+                    <a class="btn btn-primary" href="{% url 'agency-update-driver' object.CNIC %}"> Update </a>
+                </div>
+            {% endif %}
             
         </div>
     </div>

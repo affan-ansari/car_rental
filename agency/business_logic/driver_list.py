@@ -29,5 +29,5 @@ class DriverList:
         update_driver.email = email
         update_driver.contact_number = contact_number
         update_driver.address = address
-        hourly_rate = hourly_rate
+        update_driver.hourly_rate = hourly_rate
         update_driver.save()

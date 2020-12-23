@@ -109,6 +109,46 @@ def update_car(request,pk):
         context = {'update_form': update_form}
         return render(request,'agency/update_car.html',context )
 
+def search_driver(request):
+    if request.method == 'POST':
+        search_form = forms.SearchDriverForm(request.POST)
+        if search_form.is_valid():
+            CNIC = search_form.cleaned_data["CNIC"]
+            try:
+                searched_driver = DRIVER.objects.get(CNIC=CNIC)
+                messages.success(request, f'Driver found!')
+                return HttpResponseRedirect("driver/{CNIC}/".format(CNIC= searched_driver.CNIC))
+            except ObjectDoesNotExist:
+                messages.warning(request, f'Driver not found!')
+                return redirect('agency-search-driver')
+    else:
+        search_form = forms.SearchDriverForm()
+        return render(request,'agency/search_driver.html',{'search_form': search_form})
+
+
+
+def update_driver(request,pk):
+    searched_driver = DRIVER.objects.get(CNIC=pk )
+    if request.method == 'POST':
+        update_form = forms.DriverUpdateForm(request.POST, instance=searched_driver)
+        if update_form.is_valid():
+            CNIC = update_form.cleaned_data.get("CNIC")
+            first_name = update_form.cleaned_data.get("first_name")
+            last_name = update_form.cleaned_data.get("last_name")
+            email = update_form.cleaned_data.get("email")
+            contact_number = update_form.cleaned_data.get("contact_number")
+            address = update_form.cleaned_data.get("address")
+            hourly_rate = update_form.cleaned_data.get("hourly_rate")
+
+            controller.update_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate )
+            messages.success(request,f'Driver Updated Succuessfully')
+            return redirect('agency-home')
+    else:
+        update_form = forms.DriverUpdateForm(instance=searched_driver)
+        context = {'update_form': update_form}
+        return render(request,'agency/update_driver.html',context )
+
+
 def book_car(request,pk):
     selected_car = CAR.objects.get(reg_no=pk)
     if request.method == 'POST':
@@ -172,9 +212,6 @@ def register_driver(request):
     else:
         form = forms.RegisterDriverForm()
     return render(request,'agency/register_driver.html',{'form': form})
-
-def update_driver(request):
-    pass
 
 def delete_driver(request):
     if request.method == 'POST':
