@@ -9,8 +9,16 @@ class BookingLog:
     def __init__(self):
         pass
 
+    def get_bookings(self,user):
+        if user.is_superuser:
+            bookings = BOOKING.objects.all()
+            return bookings
+        else:
+            bookings = BOOKING.objects.filter(customer=user)
+            return bookings
+
     def create_booking(self,customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed):
-        if start_date_time > end_date_time:
+        if start_date_time >= end_date_time:
             raise Exception("Invalid dates! Start Date must be less than End Date!")
         allocated_driver = None
         #Check if driver available on those selected Dates.....

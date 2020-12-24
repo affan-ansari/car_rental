@@ -34,3 +34,17 @@ class DriverList:
         update_driver.address = address
         update_driver.hourly_rate = hourly_rate
         update_driver.save()
+
+    def get_drivers(self):
+        drivers = DRIVER.objects.filter(available=True)
+        return drivers
+
+    def get_driver(self,CNIC):
+        try:
+            searched_driver = DRIVER.objects.get(CNIC=CNIC)
+            if searched_driver.available == False:
+                raise Exception(f'{CNIC} was deleted!')
+            else:
+                return searched_driver
+        except ObjectDoesNotExist:
+            raise Exception(f'{CNIC} does not exist!')

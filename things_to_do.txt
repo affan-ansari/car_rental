@@ -12,12 +12,15 @@ Book Car:
 ->Driver booked too on same timeline for car.[DONE]
 
 Affan:
-->Check wherever you search from CNIC, check if DRIVER has been deleted or nah
+->Check wherever you search from CNIC, check if DRIVER has been deleted or nah[DONE]
+
 ->Implement that every User should only see their own bookings, and their own rentals etc.
 ->Car Fare and car types in models.py.
 ->Car Model mein changes.
 ->CARMODEL new model and one to Many with Car.
 ->Change on Delete for car.
+->Remove objects.all() from view
+
 Ali:
 ->Payment Model and Invoice Model and link with booking.
 ->Booking has Invoice, and Invoice has Payment and these are both OnetoOne.
@@ -37,7 +40,7 @@ customer passed as a param to controller.book_car()
 Minor shashkay :
 
 Book Car:
-->Booking start date should be greater than today's/current day's date. 
+->Booking start date should be greater than today's/current day's date.
 
 Big shashkay :
 ->Calendar with bookings for each car.

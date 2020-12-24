@@ -42,13 +42,10 @@ class DriverDetailView(DetailView):
 class BookingsDetailsView(DetailView):
      model = BOOKING
 
-# @login_required
-# @user_passes_test(lambda u: u.is_superuser)
+@login_required
 def BookingsView(request):
-    bookings = BOOKING.objects.all()
-    # bookings = BOOKING.objects.filter(
-    #     Q(is_driver_needed=True) & Q(allocated_car_id='ARX-33Y')
-    # )
+    bookings = controller.bookings.get_bookings(request.user)
+    # bookings = BOOKING.objects.all()
     context = {'bookings':bookings}
     return render(request, 'agency/bookings_list.html',context)
 
@@ -131,11 +128,11 @@ def search_driver(request):
         if search_form.is_valid():
             CNIC = search_form.cleaned_data["CNIC"]
             try:
-                searched_driver = DRIVER.objects.get(CNIC=CNIC)
+                searched_driver = controller.drivers.get_driver(CNIC)
                 messages.success(request, f'Driver found!')
                 return HttpResponseRedirect("driver/{CNIC}/".format(CNIC= searched_driver.CNIC))
-            except ObjectDoesNotExist:
-                messages.warning(request, f'Driver not found!')
+            except Exception as exc:
+                messages.warning(request, f'{exc}')
                 return redirect('agency-search-driver')
     else:
         search_form = forms.SearchDriverForm()
