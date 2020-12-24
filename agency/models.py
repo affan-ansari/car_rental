@@ -73,6 +73,7 @@ class BOOKING(models.Model):
     pickup_location = models.TextField(blank=True, default='')
     is_driver_needed = models.BooleanField()
     customer = models.ForeignKey(User,on_delete=models.PROTECT)
+    #completed = models.BooleanField() IF TABBY SAY WE DO marjao........
     #invoice... !!! NOT PAYMENT!!!!! INVOICE HAS PAYMENT IN IT.
     #payment_received = models.BooleanField(default=False)
     #payment = models.OnetoOneField(Payment,blah blah)
@@ -80,5 +81,10 @@ class BOOKING(models.Model):
         #return 'Booking:' + str(self.id) + self.allocated_car
         return 'Booking:' + str(self.id) + ' Customer:' + str(self.customer.pk)
 
+class RENTAL(models.Model):
+    booking = models.OneToOneField(BOOKING,on_delete=models.PROTECT)
+    date_of_delivery = models.DateTimeField()
+    #driver_delivery = models.BooleanField() # Needed or not? 
+    
 #One to Many : Field
 #Many to One : 

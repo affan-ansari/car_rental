@@ -18,12 +18,16 @@ Affan:
 ->Car Model mein changes.
 ->CARMODEL new model and one to Many with Car.
 ->Change on Delete for car.
+
 Ali:
 ->Payment Model and Invoice Model and link with booking.
 ->Booking has Invoice, and Invoice has Payment and these are both OnetoOne.
 ->PaymentLedger in Booziness class.
-->Receive Car
+->Receive Car [DONE]
+->Add completed = boolean_field in booking? Return car pe true. Show only those bookings which are false. [ASK TABBY]
 
+Hassan:
+->See domain model, PROFILE==CUSTOMER, hence... ?????
 
 Use Cases Left :
 ->Book Car:
