@@ -1,0 +1,34 @@
+{% extends "agency/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="col-md-8">
+        <div class = "content-section">
+            <img class="img-thumbnail" src = "{{ booking.allocated_car.image.url }}"/>
+            <h2> {{ booking.allocated_car.make }} </h2>
+            <h4> {{ booking.allocated_car.model }} </h4>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" > Book Car </legend>
+                <div class="alert alert-info border-bottom mb-4" role="alert">
+                    Booking ID: {{ booking.id }}
+                </div>
+                <div class="alert alert-info border-bottom mb-4" role="alert">
+                    Start Date Time: {{ booking.start_date_time }}
+                </div>
+                <div class="alert alert-info border-bottom mb-4" role="alert">
+                    Date: YYYY-MM-DD 
+                </div>
+                {{ rental_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit" name="update"> Deliver </button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
-from .models import CAR,DRIVER,BOOKING
+from .models import CAR,DRIVER,BOOKING,RENTAL
 # from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
 from . import forms
 
@@ -42,12 +42,38 @@ class DriverDetailView(DetailView):
 class BookingsDetailsView(DetailView):
      model = BOOKING
 
+<<<<<<< HEAD
 @login_required
 def BookingsView(request):
     bookings = controller.bookings.get_bookings(request.user)
     # bookings = BOOKING.objects.all()
     context = {'bookings':bookings}
+=======
+class RentalsDetailsView(DetailView):
+     model = RENTAL
+
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser)
+def BookingsView(request):
+    bookings = BOOKING.objects.all()
+    rentals = RENTAL.objects.all()
+    # for booking in bookings:
+    #     tempvar = RENTAL.objects.get(booking=booking)
+    #     rentals = RENTAL.objects.filter(
+    #         Q(booking_id = tempvar.id)
+    #         )
+    # bookings = BOOKING.objects.filter(
+    #     Q(is_driver_needed=True) & Q(allocated_car_id='ARX-33Y')
+    # )
+    rentalsExist = rentals.exists()
+    context = {'bookings':bookings,'rentals':rentals,'rentalsExist':rentalsExist}
+>>>>>>> b6759686e5d9efed596cba3b2204e31a9de2387f
     return render(request, 'agency/bookings_list.html',context)
+
+def RentalsView(request):
+    rentals = RENTAL.objects.all()
+    context = {'rentals':rentals}
+    return render(request,'agency/rentals_list.html',context)
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -180,7 +206,7 @@ def book_car(request,pk):
                 messages.warning(request,f'{exc}')
                 return redirect('agency-book-car',pk)
             #Put try except for Exception (if date time not available driver).
-            messages.success(request,f'Car Booked Succuessfully')
+            messages.success(request,f'Car Booked Successfully')
             return redirect('car-detail',pk)
         else:
             messages.warning(request,f'Validation error')
@@ -249,3 +275,33 @@ def delete_driver(request):
     else:
         form = forms.SearchDriverForm()
     return render(request,'agency/delete_driver.html',{'form': form})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def receive_car(request,pk):
+    selected_booking = BOOKING.objects.get(id=pk)
+    if request.method == 'POST':
+        rental_form = forms.RentalCarForm(request.POST)
+        if rental_form.is_valid():
+            allocated_booking = selected_booking
+            date_of_delivery = rental_form.cleaned_data.get("date_of_delivery")
+            try:
+                controller.receive_car(allocated_booking,date_of_delivery)
+            except Exception as exc:
+                messages.warning(request,f'{exc}')
+                return redirect('agency-receive-car',pk)
+            messages.success(request,f'Car Delivered Successfully!')
+            return redirect('agency-receive-car',pk)
+        else:
+            messages.warning(request,f'Validation error')
+            return redirect('agency-receive-car',pk)
+    
+    else:
+        rental_form = forms.RentalCarForm()
+        context = {
+            'booking': selected_booking,
+            'rental_form': rental_form
+        }
+        return render(request,'agency/receive_car.html',context)
+
