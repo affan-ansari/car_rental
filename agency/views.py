@@ -42,21 +42,13 @@ class DriverDetailView(DetailView):
 class BookingsDetailsView(DetailView):
      model = BOOKING
 
-<<<<<<< HEAD
-@login_required
-def BookingsView(request):
-    bookings = controller.bookings.get_bookings(request.user)
-    # bookings = BOOKING.objects.all()
-    context = {'bookings':bookings}
-=======
 class RentalsDetailsView(DetailView):
      model = RENTAL
 
-# @login_required
-# @user_passes_test(lambda u: u.is_superuser)
+@login_required
 def BookingsView(request):
-    bookings = BOOKING.objects.all()
-    rentals = RENTAL.objects.all()
+    bookings = controller.bookings.get_bookings(request.user)
+    rentals = RENTAL.objects.all() #if superuser
     # for booking in bookings:
     #     tempvar = RENTAL.objects.get(booking=booking)
     #     rentals = RENTAL.objects.filter(
@@ -67,9 +59,9 @@ def BookingsView(request):
     # )
     rentalsExist = rentals.exists()
     context = {'bookings':bookings,'rentals':rentals,'rentalsExist':rentalsExist}
->>>>>>> b6759686e5d9efed596cba3b2204e31a9de2387f
     return render(request, 'agency/bookings_list.html',context)
 
+@login_required
 def RentalsView(request):
     rentals = RENTAL.objects.all()
     context = {'rentals':rentals}
@@ -296,7 +288,7 @@ def receive_car(request,pk):
         else:
             messages.warning(request,f'Validation error')
             return redirect('agency-receive-car',pk)
-    
+
     else:
         rental_form = forms.RentalCarForm()
         context = {
