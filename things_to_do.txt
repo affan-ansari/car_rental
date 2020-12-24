@@ -7,11 +7,11 @@ Check wherever you search from REG_NO, check if CAR has been deleted or nah[DONE
 add user foriegn key to bookings model[DONE]
 Home shows only Available cars[DONE]
 Date time checks.... STARTDATETIME < ENDDATETIME[DONE]
+During booking, check DATE TIME if car available. For driver you can say that drivers all occupied.[DONE]
 
 
 Use Cases Left :
 ->Book Car:
-During booking, check DATE TIME if car available. For driver you can say that drivers all occupied. [TRIED WHOLE FUCKING NIGHT, CANNOT FIGURE OUT QUERY AJEEB]
 Driver booked too on same timeline for car.
 Payment... (Leave for now.....)
 
