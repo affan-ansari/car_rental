@@ -1,16 +1,20 @@
 Booking se pehle login required. [DONE]
 Check for Bookings only SUPAHUSER can see[DONE]
-fix delete functione (bool available = false if checked) [DONE]
+fix delete functione of car (bool available = false if checked) [DONE]
+fix delete functione of driver (bool available = false if checked) [DONE]
 On delete=protected for cars and drivers in bookings[DONE]
 Check wherever you search from REG_NO, check if CAR has been deleted or nah[DONE]
+add user foriegn key to bookings model[DONE]
+Home shows only Available cars[DONE]
+Date time checks.... STARTDATETIME < ENDDATETIME[DONE]
 
 
 Use Cases Left :
 ->Book Car:
-add user foriegn key to bookings model
-change profile to customer
-Home shows only Available cars.
-Date time checks.... STARTDATETIME < ENDDATETIME
-During booking, check DATE TIME if car available. For driver you can say that drivers all occupied.
+During booking, check DATE TIME if car available. For driver you can say that drivers all occupied. [TRIED WHOLE FUCKING NIGHT, CANNOT FIGURE OUT QUERY AJEEB]
 Driver booked too on same timeline for car.
 Payment... (Leave for now.....)
+
+
+THINGS TO CHANGE IN SD
+customer passed as a param to controller.book_car()

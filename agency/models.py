@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from PIL import Image
 from .business_logic.car import Car
+from users.models import User
+
 class CAR(models.Model):
     BODY_CHOICES = (
         ('SDN', 'SEDAN'),
@@ -50,15 +52,14 @@ class DRIVER(models.Model):
         return self.first_name + ' ' + self.last_name
 
 class BOOKING(models.Model):
-    #allocated_car = models.CharField(max_length=25)
-    #allocated_driver = models.CharField(max_length=25)
     allocated_car = models.ForeignKey(CAR,null=True,on_delete=models.PROTECT)
     allocated_driver = models.ForeignKey(DRIVER,null=True,on_delete=models.PROTECT)
     start_date_time = models.DateTimeField()
     end_date_time = models.DateTimeField()
     pickup_location = models.TextField(blank=True, default='')
     is_driver_needed = models.BooleanField()
+    customer = models.ForeignKey(User,on_delete=models.PROTECT)
 
     def __str__(self):
         #return 'Booking:' + str(self.id) + self.allocated_car
-        return 'Booking:' + str(self.id)
+        return 'Booking:' + str(self.id) + ' Customer:' + str(self.customer.pk)

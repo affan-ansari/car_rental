@@ -25,8 +25,8 @@ class Agency:
     def update_driver(self,CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         self.drivers.update_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)
 
-    def book_car(self,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed):
-        self.bookings.create_booking(allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
+    def book_car(self,customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed):
+        self.bookings.create_booking(customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
 
     # def delete_booking(self,book_id):
     #     return self.bookings.delete_booking(book_id)

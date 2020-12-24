@@ -16,8 +16,11 @@ class DriverList:
     def delete_driver(self,CNIC):
         try:
             searched_driver = DRIVER.objects.get(CNIC=CNIC)
-            searched_driver.delete()
-            return True
+            if searched_driver.available == False:
+                return False
+            else:
+                searched_driver.available = False
+                return True
         except ObjectDoesNotExist:
             return False
 

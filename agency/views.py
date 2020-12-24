@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
@@ -41,10 +42,13 @@ class DriverDetailView(DetailView):
 class BookingsDetailsView(DetailView):
      model = BOOKING
 
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser)
 def BookingsView(request):
     bookings = BOOKING.objects.all()
+    # bookings = BOOKING.objects.filter(
+    #     Q(is_driver_needed=True) & Q(allocated_car_id='ARX-33Y')
+    # )
     context = {'bookings':bookings}
     return render(request, 'agency/bookings_list.html',context)
 
@@ -172,7 +176,12 @@ def book_car(request,pk):
             end_date_time= book_form.cleaned_data.get("end_date_time")
             pickup_location= book_form.cleaned_data.get("pickup_location")
             is_driver_needed= book_form.cleaned_data.get("is_driver_needed")
-            controller.book_car(allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
+            customer = request.user
+            try:
+                controller.book_car(customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
+            except Exception as exc:
+                messages.warning(request,f'{exc}')
+                return redirect('agency-book-car',pk)
             #Put try except for Exception (if date time not available driver).
             messages.success(request,f'Car Booked Succuessfully')
             return redirect('car-detail',pk)
