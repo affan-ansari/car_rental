@@ -12,8 +12,8 @@ class BookingLog:
     def create_booking(self,customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed):
         if start_date_time > end_date_time:
             raise Exception("Invalid dates! Start Date must be less than End Date!")
+
         allocated_driver = None
-        # raise Exception("Affan gay")
         #Check if driver available on those selected Dates.....
         if is_driver_needed == True:
             allocated_driver = DRIVER.objects.filter(available = True).first()
@@ -22,6 +22,7 @@ class BookingLog:
                 allocated_driver.save()
             except:
                pass
+
         #  bk = booking
         #  query = (bk.allocated_car == allocated_car) and !{[(bk.st_time > st_time) and (bk.st_time > end_time)] OR [(bk.end_time < st_time) and (bk.end_time < end_time)]}
         current_bookings = BOOKING.objects.filter(
