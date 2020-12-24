@@ -1,20 +1,43 @@
-Booking se pehle login required. [DONE]
-Check for Bookings only SUPAHUSER can see[DONE]
-fix delete functione of car (bool available = false if checked) [DONE]
-fix delete functione of driver (bool available = false if checked) [DONE]
-On delete=protected for cars and drivers in bookings[DONE]
-Check wherever you search from REG_NO, check if CAR has been deleted or nah[DONE]
-add user foriegn key to bookings model[DONE]
-Home shows only Available cars[DONE]
-Date time checks.... STARTDATETIME < ENDDATETIME[DONE]
-During booking, check DATE TIME if car available. For driver you can say that drivers all occupied.[DONE]
+Book Car:
+->Booking se pehle login required. [DONE]
+->Check for Bookings only SUPAHUSER can see[DONE]
+->fix delete functione of car (bool available = false if checked) [DONE]
+->fix delete functione of driver (bool available = false if checked) [DONE]
+->On delete=protected for cars and drivers in bookings[DONE]
+->Check wherever you search from REG_NO, check if CAR has been deleted or nah[DONE]
+->add user foriegn key to bookings model[DONE]
+->Home shows only Available cars[DONE]
+->Date time checks.... STARTDATETIME < ENDDATETIME[DONE]
+->During booking, check DATE TIME if car available. For driver you can say that drivers all occupied.[DONE]
+->Driver booked too on same timeline for car.[DONE]
+
+Affan:
+->Check wherever you search from CNIC, check if DRIVER has been deleted or nah
+->Implement that every User should only see their own bookings, and their own rentals etc.
+->Car Fare and car types in models.py.
+->Car Model mein changes.
+->CARMODEL new model and one to Many with Car.
+->Change on Delete for car.
+Ali:
+->Payment Model and Invoice Model and link with booking.
+->Booking has Invoice, and Invoice has Payment and these are both OnetoOne.
+->PaymentLedger in Booziness class.
+->Receive Car
 
 
 Use Cases Left :
 ->Book Car:
-Driver booked too on same timeline for car.
+
 Payment... (Leave for now.....)
 
 
 THINGS TO CHANGE IN SD
 customer passed as a param to controller.book_car()
+
+Minor shashkay :
+
+Book Car:
+->Booking start date should be greater than today's/current day's date. 
+
+Big shashkay :
+->Calendar with bookings for each car.
