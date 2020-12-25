@@ -6,9 +6,18 @@ class RentalLog:
     def __init__(self):
         pass
 
-    def get_rentals(self):
-        rentals = RENTAL.objects.all()
-        return rentals
+    # def get_rentals(self,user):
+    #     rentals = RENTAL.objects.all()
+    #     return rentals
+
+
+    def get_rentals(self,user):
+        if user.is_superuser:
+            rentals = RENTAL.objects.all()
+            return rentals
+        else:
+            rentals = RENTAL.objects.filter(booking__customer = user)
+            return rentals
 
     def create_rental(self,booking,date_of_delivery):
         if date_of_delivery >= booking.start_date_time and date_of_delivery < booking.end_date_time:

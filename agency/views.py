@@ -49,7 +49,7 @@ class RentalsDetailsView(DetailView):
 def BookingsView(request):
     bookings = controller.bookings.get_bookings(request.user)
     # rentals = RENTAL.objects.all() #if superuser
-    rentals = controller.rentals.get_rentals() #if superuser
+    rentals = controller.rentals.get_rentals(request.user) #if superuser
     # for booking in bookings:
     #     tempvar = RENTAL.objects.get(booking=booking)
     #     rentals = RENTAL.objects.filter(
@@ -64,7 +64,7 @@ def BookingsView(request):
 
 @login_required
 def RentalsView(request):
-    rentals = controller.rentals.get_rentals()
+    rentals = controller.rentals.get_rentals(request.user)
     context = {'rentals':rentals}
     return render(request,'agency/rentals_list.html',context)
 

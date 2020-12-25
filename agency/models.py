@@ -18,6 +18,32 @@ class FARE(models.Model):
     def __str__(self):
         return self.car_type + ': $' + str(self.car_fare)
 
+class CAR_MODEL(models.Model):
+    BODY_CHOICES = (
+        ('SDN', 'SEDAN'),
+        ('CPE', 'COUPE'),
+        ('STW', 'STATION WAGON'),
+        ('HTB', 'HATCHBACK'),
+        ('CNV', 'CONVERTABLE'),
+    )
+    TRANSMISSION_CHOICES = (
+        ('MAN', 'MANUAL'),
+        ('AUT', 'AUTOMATIC'),
+    )
+
+    make = models.CharField(max_length=100)
+    model = models.PositiveIntegerField()
+    body_type = models.CharField(max_length=100, choices=BODY_CHOICES)
+    engine_capacity = models.PositiveIntegerField()
+    seats = models.PositiveIntegerField()
+    transmission = models.CharField(max_length=100,choices=TRANSMISSION_CHOICES)
+
+    class Meta:
+        unique_together = ('make','model')
+
+    def __str__(self):
+        return self.make + ' ' + str(self.model)
+
 class CAR(models.Model):
     BODY_CHOICES = (
         ('SDN', 'SEDAN'),
@@ -39,14 +65,15 @@ class CAR(models.Model):
         ('BIZ','BUSINESS'),
         ('LUX','LUXURY'),
     )
+    car_model = models.ForeignKey(CAR_MODEL,on_delete=models.PROTECT)
     reg_no = models.CharField(max_length=25,primary_key=True, default="")
-    make = models.CharField(max_length=100)
-    model = models.PositiveIntegerField()
-    body_type = models.CharField(max_length=100, choices=BODY_CHOICES)
-    engine_capacity = models.PositiveIntegerField()
-    seats = models.PositiveIntegerField()
+    # make = models.CharField(max_length=100)
+    # model = models.PositiveIntegerField()
+    # body_type = models.CharField(max_length=100, choices=BODY_CHOICES)
+    # engine_capacity = models.PositiveIntegerField()
+    # seats = models.PositiveIntegerField()
     color = models.CharField(max_length=100)
-    transmission = models.CharField(max_length=100,choices=TRANSMISSION_CHOICES)
+    # transmission = models.CharField(max_length=100,choices=TRANSMISSION_CHOICES)
     fuel = models.CharField(max_length=100,choices=FUEL_CHOICES)
     image = models.ImageField(default='default_car.png', upload_to='car_pics')
     fare = models.ForeignKey(FARE,null=True,on_delete=models.PROTECT)
