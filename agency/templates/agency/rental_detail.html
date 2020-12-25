@@ -5,13 +5,13 @@
     <div class = "content-section">
         <img class="img-thumbnail" src = "{{ rental.booking.allocated_car.image.url }}"/>
         <h1>Rental Details:</h1>
-        <h4>{{ rental.booking.allocated_car.make }} {{ rental.booking.allocated_car.model }}</h4>
+        <h4>{{ rental.booking.allocated_car.car_model.make }} {{ rental.booking.allocated_car.car_model.model }}</h4>
         <h4>{{ rental.booking.allocated_car.reg_no }}</h4>
         <h4>{{ rental.booking.start_date_time }}</h4>
         <h4>{{ rental.booking.end_date_time }}</h4>
         <h4>Location: {{ rental.booking.pickup_location }}</h4>
-        
-        
+
+
     </div>
 </div>
 {% endblock content %}

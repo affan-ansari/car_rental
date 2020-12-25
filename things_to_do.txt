@@ -18,9 +18,10 @@ Affan:
 ->Remove objects.all() from view[DONE]
 ->Car Model mein changes.[DONE]
 ->Implement that every User should only see their own Rentals[DONE]
-
-->CARMODEL new model and one to Many with Car.[BIG MASLE, DISCUSS WITH ALI]
+->CARMODEL new model and one to Many with Car.[DONE]
 ->Change on Delete for car.[DISCUSS WITH ALI]
+
+->Create CRUD forms and views for CAR_MODEL
 
 Ali:
 ->Payment Model and Invoice Model and link with booking.

@@ -7,13 +7,15 @@
                 <img class="img-thumbnail" src = "{{ rental.booking.allocated_car.image.url }}"/>
                 <h2><a href="{% url 'rental-detail' rental.id %}">Rental ID: {{rental.id}}</a></h2>
                 <h3>Customer Username: {{ rental.booking.customer.username }}</h3>
-                <h4>{{ rental.booking.allocated_car.make }} {{ rental.booking.allocated_car.model }}</h4>
+                <h4>{{ rental.booking.allocated_car.car_model.make }} {{ rental.booking.allocated_car.car_model.model }}</h4>
                 <h4>{{ rental.booking.allocated_driver.first_name }} {{ rental.booking.allocated_driver.last_name }}</h4>
                 <h4>Delivery Date: {{ rental.date_of_delivery }}</h4>
                 <hr>
-                <a class="btn btn-primary" href="#"> Return Car </a>
+                {% if user.is_superuser %}
+                    <a class="btn btn-primary" href="#"> Return Car </a>
+                {% endif %}
             </div>
-            
+
         </div>
     {% endfor %}
 {% endblock content %}

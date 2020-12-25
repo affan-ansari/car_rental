@@ -4,8 +4,8 @@
     <div class="col-md-8">
         <div class = "content-section">
             <img class="img-thumbnail" src = "{{ object.image.url }}"/>
-            <h2> {{ object.make }} </h2>
-            <h4>{{ object.model }}</h4>
+            <h2> {{ object.car_model.make }} </h2>
+            <h4>{{ object.car_model.model }}</h4>
             <h4>{{ object.reg_no }}</h4>
             {% if user.is_superuser %}
                 <div>

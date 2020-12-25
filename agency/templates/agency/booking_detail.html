@@ -4,13 +4,13 @@
 <div class="col-md-8">
     <div class = "content-section">
         <h1>Booking Details:</h1>
-        <h4>{{ booking.allocated_car.make }} {{ booking.allocated_car.model }}</h4>
+        <h4>{{ booking.allocated_car.car_model.make }} {{ booking.allocated_car.car_model.model }}</h4>
         <h4>{{ booking.allocated_car.reg_no }}</h4>
         <h4>{{ booking.start_date_time }}</h4>
         <h4>{{ booking.end_date_time }}</h4>
         <h4>{{ booking.pickup_location }}</h4>
-        
-        
+
+
     </div>
 </div>
 {% endblock content %}

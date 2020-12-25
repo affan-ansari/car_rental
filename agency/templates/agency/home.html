@@ -5,8 +5,8 @@
     <div class="col-md-8">
         <div class = "content-section">
             <img class="img-thumbnail" src = "{{ car.image.url }}"/>
-            <h2><a href="{% url 'car-detail' car.reg_no %}">{{ car.make }}</a></h2>
-            <h4>{{ car.model }}</h4>
+            <h2><a href="{% url 'car-detail' car.reg_no %}">{{ car.car_model.make }}</a></h2>
+            <h4>{{ car.car_model.model }}</h4>
         </div>
     </div>
     {% endfor %}
