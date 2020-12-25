@@ -12,30 +12,12 @@
                 <h4>Booked from: {{ booking.start_date_time }}</h4>
                 <h4>Till: {{ booking.end_date_time }} </h4>
                 <hr>
-                {% if booking.rentals.count == 0 %}
-                <a class="btn btn-primary" href="{% url 'agency-receive-car' booking.id %}"> Deliver Car </a>
-                {% else %}
-                <h5>Status: Delivered</h5>
-                {% endif %}
-                <!-- {% if booking.delivered == True %}
-                <h5>Status: Delivered</h5>
-                {% else %}
-                <a class="btn btn-primary" href="{% url 'agency-receive-car' booking.id %}"> Deliver Car </a>
-                {% endif %} -->
-                <!-- {% if rentalsExist  %}
-                    {% for rental in rentals %}
-                        {% if rental.booking.id == booking.id %}
-                        <h5>Status: Delivered</h5>
-                        {% else %}    
-                        <a class="btn btn-primary" href="{% url 'agency-receive-car' booking.id %}"> Deliver Car </a>
-                        {% endif %}
-                    {% endfor %}
+                {% if booking.rentals %}
+                    <h5>Status: Delivered</h5>
                 {% else %}
                     <a class="btn btn-primary" href="{% url 'agency-receive-car' booking.id %}"> Deliver Car </a>
-                {% endif %} -->
-                
+                {% endif %}
             </div>
-            
         </div>
     {% endfor %}
 {% endblock content %}
