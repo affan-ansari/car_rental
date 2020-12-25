@@ -4,11 +4,8 @@ from .models import CAR,DRIVER,BOOKING, RENTAL
 class RegisterCarForm(forms.ModelForm):
     class Meta:
         model = CAR
-        fields = [
-            'reg_no','make', 'model', 'body_type',
-            'engine_capacity', 'seats', 'color',
-            'transmission', 'fuel', 'image'
-        ]
+        fields = '__all__'
+        exclude = ['available']
 
 class SearchCarForm(forms.Form):
     reg_no = forms.CharField(label="Registration Number", max_length=25)
@@ -28,6 +25,7 @@ class DriverUpdateForm(forms.ModelForm):
     class Meta:
         model = DRIVER
         fields = '__all__'
+        exclude = ['available']
 
 class CarUpdateForm(forms.ModelForm):
     reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
@@ -37,6 +35,7 @@ class CarUpdateForm(forms.ModelForm):
     class Meta:
         model = CAR
         fields = '__all__'
+        exclude = ['available']
 
 class BookCarForm(forms.ModelForm):
     class Meta:

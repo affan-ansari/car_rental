@@ -5,7 +5,7 @@ from PIL import Image
 from .business_logic.car import Car
 from users.models import User
 # class CARMODEL(models.Model):
-    
+
 class CAR(models.Model):
     BODY_CHOICES = (
         ('SDN', 'SEDAN'),
@@ -22,15 +22,11 @@ class CAR(models.Model):
         ('PET', 'PETROL'),
         ('DSL', 'DIESEL'),
     )
-    #TYPE_CHOICES = (
-    #   ('LUX','LUXURY')
-    #   ('LUX',140)
-    #   ('ECO','ECONOMY')
-    #   ('ECO',70)
-    #   ('BIZ','BUSINESS')
-    #   ('BIZ',90)
-    #)
-    #FARE_CHOICES?????
+    TYPE_CHOICES = (
+        ('ECO','ECONOMY'),
+        ('BIZ','BUSINESS'),
+        ('LUX','LUXURY'),
+    )
     reg_no = models.CharField(max_length=25,primary_key=True, default="")
     make = models.CharField(max_length=100)
     model = models.PositiveIntegerField()
@@ -41,12 +37,10 @@ class CAR(models.Model):
     transmission = models.CharField(max_length=100,choices=TRANSMISSION_CHOICES)
     fuel = models.CharField(max_length=100,choices=FUEL_CHOICES)
     image = models.ImageField(default='default_car.png', upload_to='car_pics')
+    car_fare = models.PositiveIntegerField(default=0)
+    car_type = models.CharField(max_length=100, choices=TYPE_CHOICES, default='ECONOMY')
     accident_details = models.TextField(blank=True, default='')
     available = models.BooleanField(default=True)
-    #car_model = models.ForeignKey(Car)
-    #allocated_car.car_model.seats,make,model.... whatever.
-    #car_fare = models.PositiveIntegerField(default=0)
-    #car_type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     def __str__(self):
         return self.make + ' ' + str(self.model)
 
@@ -84,7 +78,7 @@ class BOOKING(models.Model):
 class RENTAL(models.Model):
     booking = models.OneToOneField(BOOKING,on_delete=models.PROTECT)
     date_of_delivery = models.DateTimeField()
-    #driver_delivery = models.BooleanField() # Needed or not? 
-    
+    #driver_delivery = models.BooleanField() # Needed or not?
+
 #One to Many : Field
-#Many to One : 
+#Many to One :

@@ -13,16 +13,14 @@ Book Car:
 
 Affan:
 ->Check wherever you search from CNIC, check if DRIVER has been deleted or nah[DONE]
+->Implement that every User should only see their own Bookings[DONE]
+->Car Fare and car types in models.py[DONE]
+->Remove objects.all() from view[DONE]
+->Car Model mein changes.[DONE]
 
-->Implement that every User should only see their own bookings, and their own rentals etc.
-->Car Fare and car types in models.py.
-->Car Model mein changes.
-->CARMODEL new model and one to Many with Car.
-->Change on Delete for car.
-<<<<<<< HEAD
-->Remove objects.all() from view
-=======
->>>>>>> b6759686e5d9efed596cba3b2204e31a9de2387f
+->CARMODEL new model and one to Many with Car.[BIG MASLE, DISCUSS WITH ALI]
+->Change on Delete for car.[DISCUSS WITH ALI]
+->Implement that every User should only see their own Rentals[ASK TABY FOR NESTED QUERY]
 
 Ali:
 ->Payment Model and Invoice Model and link with booking.
@@ -32,7 +30,9 @@ Ali:
 ->Add completed = boolean_field in booking? Return car pe true. Show only those bookings which are false. [ASK TABBY]
 
 Hassan:
-->See domain model, PROFILE==CUSTOMER, hence... ?????
+->Add customer variables to profile model
+->Create CAR_TYPE model (luxury hai business hai whatever, model will have attribute of fare as well)
+->Create repair detail model (SEE DOMAIN MODEL FOR REFERENCE)
 
 Use Cases Left :
 ->Book Car:
