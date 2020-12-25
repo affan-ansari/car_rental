@@ -116,7 +116,7 @@ class BOOKING(models.Model):
         return 'Booking:' + str(self.id) + ' Customer:' + str(self.customer.pk)
 
 class RENTAL(models.Model):
-    booking = models.OneToOneField(BOOKING,on_delete=models.PROTECT)
+    booking = models.OneToOneField(BOOKING,on_delete=models.PROTECT,related_name='rentals')
     date_of_delivery = models.DateTimeField()
     #driver_delivery = models.BooleanField() # Needed or not?
 

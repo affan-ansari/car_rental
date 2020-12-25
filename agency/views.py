@@ -49,7 +49,7 @@ class RentalsDetailsView(DetailView):
 def BookingsView(request):
     bookings = controller.bookings.get_bookings(request.user)
     # rentals = RENTAL.objects.all() #if superuser
-    rentals = controller.rentals.get_rentals(request.user) #if superuser
+    #rentals = controller.rentals.get_rentals() #if superuser
     # for booking in bookings:
     #     tempvar = RENTAL.objects.get(booking=booking)
     #     rentals = RENTAL.objects.filter(
@@ -58,8 +58,8 @@ def BookingsView(request):
     # bookings = BOOKING.objects.filter(
     #     Q(is_driver_needed=True) & Q(allocated_car_id='ARX-33Y')
     # )
-    rentalsExist = rentals.exists()
-    context = {'bookings':bookings,'rentals':rentals,'rentalsExist':rentalsExist}
+    #rentalsExist = rentals.exists()
+    context = {'bookings':bookings}
     return render(request, 'agency/bookings_list.html',context)
 
 @login_required
