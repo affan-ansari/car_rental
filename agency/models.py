@@ -40,6 +40,7 @@ class CAR_MODEL(models.Model):
 
     class Meta:
         unique_together = ('make','model')
+        verbose_name = 'Car Model'
 
     def __str__(self):
         return self.make + ' ' + str(self.model)
