@@ -6,6 +6,18 @@ from .business_logic.car import Car
 from users.models import User
 # class CARMODEL(models.Model):
 
+class FARE(models.Model):
+    TYPE_CHOICES = (
+        ('ECO','ECONOMY'),
+        ('BIZ','BUSINESS'),
+        ('LUX','LUXURY'),
+    )
+    car_type = models.CharField(max_length=100, choices=TYPE_CHOICES)
+    car_fare = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.car_type + ': $' + str(self.car_fare)
+
 class CAR(models.Model):
     BODY_CHOICES = (
         ('SDN', 'SEDAN'),
@@ -37,8 +49,7 @@ class CAR(models.Model):
     transmission = models.CharField(max_length=100,choices=TRANSMISSION_CHOICES)
     fuel = models.CharField(max_length=100,choices=FUEL_CHOICES)
     image = models.ImageField(default='default_car.png', upload_to='car_pics')
-    car_fare = models.PositiveIntegerField(default=0)
-    car_type = models.CharField(max_length=100, choices=TYPE_CHOICES, default='ECONOMY')
+    fare = models.ForeignKey(FARE,null=True,on_delete=models.PROTECT)
     accident_details = models.TextField(blank=True, default='')
     available = models.BooleanField(default=True)
     def __str__(self):
@@ -46,6 +57,7 @@ class CAR(models.Model):
 
     def get_absolute_url(self):
         return reverse('car-detail', kwargs={'pk': self.reg_no})
+
 
 class DRIVER(models.Model):
     CNIC = models.CharField(max_length=15, primary_key=True, default="")
