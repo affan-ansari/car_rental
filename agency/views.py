@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
-from .models import CAR,DRIVER,BOOKING,RENTAL
+from .models import CAR,DRIVER,BOOKING,RENTAL,CAR_MODEL
 # from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
 from . import forms
 
@@ -48,17 +48,6 @@ class RentalsDetailsView(DetailView):
 @login_required
 def BookingsView(request):
     bookings = controller.bookings.get_bookings(request.user)
-    # rentals = RENTAL.objects.all() #if superuser
-    #rentals = controller.rentals.get_rentals() #if superuser
-    # for booking in bookings:
-    #     tempvar = RENTAL.objects.get(booking=booking)
-    #     rentals = RENTAL.objects.filter(
-    #         Q(booking_id = tempvar.id)
-    #         )
-    # bookings = BOOKING.objects.filter(
-    #     Q(is_driver_needed=True) & Q(allocated_car_id='ARX-33Y')
-    # )
-    #rentalsExist = rentals.exists()
     context = {'bookings':bookings}
     return render(request, 'agency/bookings_list.html',context)
 
@@ -74,21 +63,14 @@ def register_car(request):
     if request.method == 'POST':
         form = forms.RegisterCarForm(request.POST, request.FILES)
         if form.is_valid():
+            car_model = form.cleaned_data.get("car_model")
             reg_no = form.cleaned_data.get("reg_no")
-            make = form.cleaned_data.get("make")
-            model = form.cleaned_data.get("model")
-            body_type = form.cleaned_data.get("body_type")
-            engine_capacity = form.cleaned_data.get("engine_capacity")
-            seats = form.cleaned_data.get("seats")
             color = form.cleaned_data.get("color")
-            transmission = form.cleaned_data.get("transmission")
             fuel = form.cleaned_data.get("fuel")
             image = form.cleaned_data.get("image")
+            fare = form.cleaned_data.get("fare")
 
-            controller.add_car(
-                reg_no,make,model,body_type,engine_capacity,
-                seats,color,transmission,fuel,image
-            )
+            controller.add_car(car_model,reg_no,color,fuel,fare,image)
             messages.success(request, f'Car added successfully!')
             return redirect('agency-register-car')
     else:
@@ -118,20 +100,13 @@ def update_car(request,pk):
     if request.method == 'POST':
         update_form = forms.CarUpdateForm(request.POST, request.FILES, instance=searched_car)
         if update_form.is_valid():
-            reg_no = update_form.cleaned_data.get("reg_no")
-            make = update_form.cleaned_data.get("make")
-            model = update_form.cleaned_data.get("model")
-            body_type = update_form.cleaned_data.get("body_type")
-            engine_capacity = update_form.cleaned_data.get("engine_capacity")
-            seats = update_form.cleaned_data.get("seats")
             color = update_form.cleaned_data.get("color")
-            transmission = update_form.cleaned_data.get("transmission")
             fuel = update_form.cleaned_data.get("fuel")
             image = update_form.cleaned_data.get("image")
             accident_details = update_form.cleaned_data.get("accident_details")
-            available = update_form.cleaned_data.get("available")
+            fare = update_form.cleaned_data.get("fare")
 
-            controller.update_car(reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image,accident_details,available)
+            controller.update_car(searched_car,color,fuel,image,fare,accident_details)
             messages.success(request,f'Car Updated Succuessfully')
             return redirect('agency-home')
     else:

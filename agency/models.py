@@ -8,9 +8,9 @@ from users.models import User
 
 class FARE(models.Model):
     TYPE_CHOICES = (
-        ('ECO','ECONOMY'),
-        ('BIZ','BUSINESS'),
-        ('LUX','LUXURY'),
+        ('Economy','ECONOMY'),
+        ('Business','BUSINESS'),
+        ('Luxury','LUXURY'),
     )
     car_type = models.CharField(max_length=100, choices=TYPE_CHOICES)
     car_fare = models.PositiveIntegerField(default=0)
@@ -43,45 +43,24 @@ class CAR_MODEL(models.Model):
         verbose_name = 'Car Model'
 
     def __str__(self):
-        return self.make + ' ' + str(self.model)
+        return str(self.id) + ': ' + self.make + ' ' + str(self.model)
 
 class CAR(models.Model):
-    BODY_CHOICES = (
-        ('SDN', 'SEDAN'),
-        ('CPE', 'COUPE'),
-        ('STW', 'STATION WAGON'),
-        ('HTB', 'HATCHBACK'),
-        ('CNV', 'CONVERTABLE'),
-    )
-    TRANSMISSION_CHOICES = (
-        ('MAN', 'MANUAL'),
-        ('AUT', 'AUTOMATIC'),
-    )
     FUEL_CHOICES = (
         ('PET', 'PETROL'),
         ('DSL', 'DIESEL'),
     )
-    TYPE_CHOICES = (
-        ('ECO','ECONOMY'),
-        ('BIZ','BUSINESS'),
-        ('LUX','LUXURY'),
-    )
+
     car_model = models.ForeignKey(CAR_MODEL,on_delete=models.PROTECT)
     reg_no = models.CharField(max_length=25,primary_key=True, default="")
-    # make = models.CharField(max_length=100)
-    # model = models.PositiveIntegerField()
-    # body_type = models.CharField(max_length=100, choices=BODY_CHOICES)
-    # engine_capacity = models.PositiveIntegerField()
-    # seats = models.PositiveIntegerField()
     color = models.CharField(max_length=100)
-    # transmission = models.CharField(max_length=100,choices=TRANSMISSION_CHOICES)
     fuel = models.CharField(max_length=100,choices=FUEL_CHOICES)
     image = models.ImageField(default='default_car.png', upload_to='car_pics')
     fare = models.ForeignKey(FARE,null=True,on_delete=models.PROTECT)
     accident_details = models.TextField(blank=True, default='')
     available = models.BooleanField(default=True)
     def __str__(self):
-        return self.make + ' ' + str(self.model)
+        return self.car_model.make + ' ' + str(self.car_model.model)
 
     def get_absolute_url(self):
         return reverse('car-detail', kwargs={'pk': self.reg_no})
@@ -119,6 +98,3 @@ class RENTAL(models.Model):
     booking = models.OneToOneField(BOOKING,on_delete=models.PROTECT,related_name='rentals')
     date_of_delivery = models.DateTimeField()
     #driver_delivery = models.BooleanField() # Needed or not?
-
-#One to Many : Field
-#Many to One :
