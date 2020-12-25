@@ -17,6 +17,7 @@ class RegisterDriverForm(forms.ModelForm):
     class Meta:
         model = DRIVER
         fields = '__all__'
+        exclude = ['available']
 
 class DriverUpdateForm(forms.ModelForm):
     CNIC =  forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
@@ -28,14 +29,15 @@ class DriverUpdateForm(forms.ModelForm):
         exclude = ['available']
 
 class CarUpdateForm(forms.ModelForm):
-    reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
-    make = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
-    model = forms.IntegerField(widget=forms.NumberInput(attrs={'readonly':'True'}))
-    body_type = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    # reg_no = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    # car_model = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    # make = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
+    # model = forms.IntegerField(widget=forms.NumberInput(attrs={'readonly':'True'}))
+    # body_type = forms.CharField(widget=forms.TextInput(attrs={'readonly':'True'}))
     class Meta:
         model = CAR
-        fields = '__all__'
-        exclude = ['available']
+        fields = ['color','fuel','image','fare','accident_details']
+        # exclude = ['available','car_model']
 
 class BookCarForm(forms.ModelForm):
     class Meta:

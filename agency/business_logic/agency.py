@@ -9,14 +9,14 @@ class Agency:
         self.bookings = BookingLog()
         self.rentals = RentalLog()
 
-    def add_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image):
-        self.cars.add_car(reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image)
+    def add_car(self,car_model,reg_no,color,fuel,fare,image):
+        self.cars.add_car(car_model,reg_no,color,fuel,fare,image)
 
     def delete_car(self,reg_no):
         return self.cars.delete_car(reg_no)
 
-    def update_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image,accident_details,available):
-        self.cars.update_car(reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image,accident_details,available)
+    def update_car(self,searched_car,color,fuel,image,fare,accident_details):
+        self.cars.update_car(searched_car,color,fuel,image,fare,accident_details)
 
     def add_driver(self,CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         self.drivers.add_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)

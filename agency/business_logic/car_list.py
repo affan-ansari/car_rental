@@ -6,13 +6,9 @@ class CarList:
     def __init__(self):
         pass
 
-    def add_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image):
+    def add_car(self,car_model,reg_no,color,fuel,fare,image):
         reg_no = reg_no.upper()
-        new_car = CAR(
-            reg_no=reg_no,make=make,model=model,
-            body_type=body_type,engine_capacity=engine_capacity,
-            seats=seats,color=color,transmission=transmission,fuel=fuel,image=image
-        )
+        new_car = CAR(car_model=car_model,reg_no=reg_no,color=color,fuel=fuel,fare=fare,image=image)
         new_car.save()
 
     def delete_car(self,reg_no):
@@ -29,21 +25,27 @@ class CarList:
         except ObjectDoesNotExist:
             return False
 
-    def update_car(self,reg_no,make,model,body_type,engine_capacity,seats,color,transmission,fuel,image,accident_details,available):
-        update_car = CAR.objects.get(reg_no=reg_no)
-        update_car.reg_no = reg_no
-        update_car.make = make
-        update_car.model = model
-        update_car.body_type = body_type
-        update_car.engine_capacity = engine_capacity
-        update_car.seats = seats
-        update_car.color = color
-        update_car.transmission = transmission
-        update_car.fuel = fuel
-        update_car.image = image
-        update_car.accident_details = accident_details
-        update_car.available = available
-        update_car.save()
+    def update_car(self,searched_car,color,fuel,image,fare,accident_details):
+        searched_car.color = color
+        searched_car.fuel = fuel
+        searched_car.image = image
+        searched_car.accident_details = accident_details
+        searched_car.fare = fare
+        searched_car.save()
+        # update_car = CAR.objects.get(reg_no=reg_no)
+        # update_car.reg_no = reg_no
+        # update_car.make = make
+        # update_car.model = model
+        # update_car.body_type = body_type
+        # update_car.engine_capacity = engine_capacity
+        # update_car.seats = seats
+        # update_car.color = color
+        # update_car.transmission = transmission
+        # update_car.fuel = fuel
+        # update_car.image = image
+        # update_car.accident_details = accident_details
+        # update_car.available = available
+        # update_car.save()
 
     def get_cars(self):
         cars = CAR.objects.filter(available=True)
