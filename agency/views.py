@@ -48,7 +48,8 @@ class RentalsDetailsView(DetailView):
 @login_required
 def BookingsView(request):
     bookings = controller.bookings.get_bookings(request.user)
-    rentals = RENTAL.objects.all() #if superuser
+    # rentals = RENTAL.objects.all() #if superuser
+    rentals = controller.rentals.get_rentals() #if superuser
     # for booking in bookings:
     #     tempvar = RENTAL.objects.get(booking=booking)
     #     rentals = RENTAL.objects.filter(
@@ -63,7 +64,7 @@ def BookingsView(request):
 
 @login_required
 def RentalsView(request):
-    rentals = RENTAL.objects.all()
+    rentals = controller.rentals.get_rentals()
     context = {'rentals':rentals}
     return render(request,'agency/rentals_list.html',context)
 
@@ -113,7 +114,7 @@ def search_car(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def update_car(request,pk):
-    searched_car = CAR.objects.get(reg_no=pk)
+    searched_car = controller.cars.get_car(pk)
     if request.method == 'POST':
         update_form = forms.CarUpdateForm(request.POST, request.FILES, instance=searched_car)
         if update_form.is_valid():
@@ -159,7 +160,7 @@ def search_driver(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def update_driver(request,pk):
-    searched_driver = DRIVER.objects.get(CNIC=pk )
+    searched_driver = controller.drivers.get_driver(pk)
     if request.method == 'POST':
         update_form = forms.DriverUpdateForm(request.POST, instance=searched_driver)
         if update_form.is_valid():
@@ -182,7 +183,7 @@ def update_driver(request,pk):
 @login_required
 @user_passes_test(lambda u: u.is_superuser == False)
 def book_car(request,pk):
-    selected_car = CAR.objects.get(reg_no=pk)
+    selected_car = controller.cars.get_car(pk)
     if request.method == 'POST':
         book_form = forms.BookCarForm(request.POST)
         if book_form.is_valid():
@@ -272,7 +273,7 @@ def delete_driver(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def receive_car(request,pk):
-    selected_booking = BOOKING.objects.get(id=pk)
+    selected_booking = controller.bookings.get_booking(pk)
     if request.method == 'POST':
         rental_form = forms.RentalCarForm(request.POST)
         if rental_form.is_valid():

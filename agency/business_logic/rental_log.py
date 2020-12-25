@@ -6,6 +6,10 @@ class RentalLog:
     def __init__(self):
         pass
 
+    def get_rentals(self):
+        rentals = RENTAL.objects.all()
+        return rentals
+
     def create_rental(self,booking,date_of_delivery):
         if date_of_delivery >= booking.start_date_time and date_of_delivery < booking.end_date_time:
             new_rental = RENTAL(
@@ -16,3 +20,4 @@ class RentalLog:
         else:
             print("Raising exception!")
             raise Exception('Car delivery date is not within the booking period!')
+

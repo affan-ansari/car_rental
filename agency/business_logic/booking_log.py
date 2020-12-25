@@ -66,11 +66,9 @@ class BookingLog:
             )
             new_booking.save()
 
-    # def delete_booking(self,book_id):
-    #     #book_id = book_id.upper()
-    #     try:
-    #         searched_booking = BOOKING.objects.get(id=book_id)
-    #         searched_booking.delete()
-    #         return True
-    #     except ObjectDoesNotExist:
-    #         return False
+    def get_booking(self,booking_id):
+        try:
+            searched_booking = BOOKING.objects.get(id=booking_id)
+            return searched_booking
+        except ObjectDoesNotExist:
+            raise Exception(f'{booking_id} does not exist!')
