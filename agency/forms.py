@@ -1,11 +1,16 @@
 from django import forms
-from .models import CAR,DRIVER,BOOKING, RENTAL
+from .models import CAR,DRIVER,BOOKING, RENTAL,CAR_MODEL
 
 class RegisterCarForm(forms.ModelForm):
     class Meta:
         model = CAR
         fields = '__all__'
         exclude = ['available']
+
+class RegisterCarModelForm(forms.ModelForm):
+    class Meta:
+        model = CAR_MODEL
+        fields = '__all__'
 
 class SearchCarForm(forms.Form):
     reg_no = forms.CharField(label="Registration Number", max_length=25)

@@ -77,6 +77,25 @@ def register_car(request):
         form = forms.RegisterCarForm()
     return render(request,'agency/register_car.html',{'form': form})
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def register_carmodel(request):
+    if request.method == 'POST':
+        form = forms.RegisterCarModelForm(request.POST)
+        if form.is_valid():
+            make = form.cleaned_data.get("make")
+            model = form.cleaned_data.get("model")
+            body_type = form.cleaned_data.get("body_type")
+            engine_capacity = form.cleaned_data.get("engine_capacity")
+            seats = form.cleaned_data.get("seats")
+            transmission = form.cleaned_data.get("transmission")
+            controller.add_carmodel(make,model,body_type,engine_capacity,seats,transmission)
+            messages.success(request, f'Car Model added successfully!')
+            return redirect('agency-register-carmodel')
+    else:
+        form = forms.RegisterCarModelForm()
+    return render(request,'agency/register_carmodel.html',{'form': form})
+
 def search_car(request):
     if request.method == 'POST':
         search_form = forms.SearchCarForm(request.POST)

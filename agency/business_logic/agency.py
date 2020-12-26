@@ -12,6 +12,9 @@ class Agency:
     def add_car(self,car_model,reg_no,color,fuel,fare,image):
         self.cars.add_car(car_model,reg_no,color,fuel,fare,image)
 
+    def add_carmodel(self,make,model,body_type,engine_capacity,seats,transmission):
+        self.cars.add_carmodel(make,model,body_type,engine_capacity,seats,transmission)
+
     def delete_car(self,reg_no):
         return self.cars.delete_car(reg_no)
 
