@@ -1,5 +1,5 @@
 from django import forms
-from .models import CAR,DRIVER,BOOKING, RENTAL,CAR_MODEL
+from .models import CAR, CREDIT_CARD,DRIVER,BOOKING, PAYMENT, RENTAL,RETURNCAR, CAR_MODEL
 
 class RegisterCarForm(forms.ModelForm):
     class Meta:
@@ -53,3 +53,29 @@ class RentalCarForm(forms.ModelForm):
     class Meta:
         model = RENTAL
         fields = ['date_of_delivery']
+
+class ReturnCarForm(forms.ModelForm):
+    class Meta:
+        model = RETURNCAR
+        fields = '__all__'
+
+class PaymentOptionForm(forms.Form):
+    PAYMENT_CHOICES = (
+        ('CreditCard','CreditCard'),
+        ('Cash','Cash'),
+    )
+    payment_option = forms.CharField(label="Payment Option",widget=forms.Select(choices=PAYMENT_CHOICES),max_length=30)
+    # payment_option = forms.ChoiceField(choices=PAYMENT_CHOICES, widget=forms.RadioSelect,label="Payment Choice")
+
+class PaymentbyCashForm(forms.ModelForm):
+    class Meta:
+        model = PAYMENT
+        fields = '__all__'
+        exclude = ['credit_card','balance']
+
+class PaymentbyCreditCardForm(forms.ModelForm):
+    #  amount = forms.IntegerField()
+    payment_date = forms.DateField()
+    class Meta:
+        model = CREDIT_CARD
+        fields = '__all__'

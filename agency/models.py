@@ -98,3 +98,48 @@ class RENTAL(models.Model):
     booking = models.OneToOneField(BOOKING,on_delete=models.PROTECT,related_name='rentals')
     date_of_delivery = models.DateTimeField()
     #driver_delivery = models.BooleanField() # Needed or not?
+
+class CREDIT_CARD(models.Model):
+    card_number = models.CharField(max_length=25,default="")
+    code = models.CharField(max_length=4,default="")
+    expiry_date = models.DateField()
+
+    def __str__(self):
+        return self.card_number
+
+
+class PAYMENT(models.Model):
+    amount = models.PositiveIntegerField(default=0)
+    payment_date = models.DateField()
+    credit_card = models.ForeignKey(CREDIT_CARD,null=True,on_delete=models.PROTECT)
+    balance = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return 'Payment:' + str(self.id) + 'CreditCard:' + str(self.credit_card)
+
+class INVOICE(models.Model):
+    payment = models.OneToOneField(PAYMENT,null=True,on_delete=models.CASCADE)
+    booking = models.OneToOneField(BOOKING,null=True,on_delete=models.CASCADE)
+    totalAmount = models.PositiveIntegerField(default=0)
+    days_booked = models.PositiveIntegerField(default=0)
+
+class LATEFINE(models.Model):
+    per_day_fine = models.PositiveIntegerField(default=0)
+    days_late = models.PositiveIntegerField(default=0)
+
+class DAMAGES(models.Model):
+    DAMAGE_TYPE = (
+        ('Mechanical','Mechanical'),
+        ('Body Damage','Body Damage'),
+    )
+    type = models.CharField(max_length=15,null=True,choices=DAMAGE_TYPE)
+
+class FINES(models.Model):
+    damages = models.OneToOneField(DAMAGES,null=True,on_delete=models.PROTECT)
+    late_fine = models.OneToOneField(LATEFINE,null=True,on_delete=models.PROTECT)
+    damages_amount = models.PositiveIntegerField(default=0)
+    late_return_amount = models.PositiveIntegerField(default=0)
+
+class RETURNCAR(models.Model):
+    rental = models.OneToOneField(RENTAL,null=True,on_delete=models.PROTECT)
+    return_date = models.DateTimeField()
+    fine = models.OneToOneField(FINES,null=True,on_delete=models.PROTECT)

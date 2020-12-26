@@ -1,0 +1,29 @@
+{% extends "agency/base.html" %}
+{% load static %}
+{% block content %}
+{% for invoice in invoices %}
+    <div class="col-md-8">
+        <div class = "content-section">
+            <h1>Invoice Details:</h1>
+            {% if user.is_superuser %}
+                <h4>Customer Username: {{ invoice.booking.customer.username}}</h4>
+            {% endif %}
+                <hr>
+                <h3><a href="{% url 'agency-create-invoice' invoice.booking.id %}">Invoice ID: {{ invoice.id }}</a></h3>
+                <h4>{{ invoice.booking.allocated_car.car_model.make }} {{ invoice.booking.allocated_car.car_model.model }}</h4>
+                <h4>{{ invoice.booking.allocated_car.reg_no }}</h4>
+                <h4>{{ invoice.booking.start_date_time }}</h4>
+                <h4>{{ invoice.booking.end_date_time }}</h4>
+                <h4>{{ invoice.booking.pickup_location }}</h4>
+                <hr>
+                <h5>Per day fare: ${{ invoice.booking.allocated_car.fare.car_fare }}</h5>
+                <h5>Days booked: {{ invoice.days_booked }}</h5>
+                <h5>Total Amount : ${{ invoice.totalAmount}}</h5>
+                <hr>
+            {% if invoice.payment %}
+                <h5>Status: Paid</h5>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+{% endblock content %}
