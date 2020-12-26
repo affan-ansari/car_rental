@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
-from .models import CAR,DRIVER,BOOKING,RENTAL,CAR_MODEL
+from .models import CAR, CREDIT_CARD,DRIVER,BOOKING,RENTAL,CAR_MODEL,PAYMENT,INVOICE,LATEFINE,DAMAGES,FINES
 # from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
 from . import forms
 
@@ -169,13 +169,13 @@ def book_car(request,pk):
             is_driver_needed= book_form.cleaned_data.get("is_driver_needed")
             customer = request.user
             try:
-                controller.book_car(customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
+                new_booking = controller.book_car(customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
             except Exception as exc:
                 messages.warning(request,f'{exc}')
                 return redirect('agency-book-car',pk)
             #Put try except for Exception (if date time not available driver).
             messages.success(request,f'Car Booked Successfully')
-            return redirect('car-detail',pk)
+            return redirect('agency-create-invoice',new_booking.id)
         else:
             messages.warning(request,f'Validation error')
             return redirect('agency-book-car',pk)
@@ -249,27 +249,142 @@ def delete_driver(request):
 @user_passes_test(lambda u: u.is_superuser)
 def receive_car(request,pk):
     selected_booking = controller.bookings.get_booking(pk)
-    if request.method == 'POST':
-        rental_form = forms.RentalCarForm(request.POST)
-        if rental_form.is_valid():
-            allocated_booking = selected_booking
-            date_of_delivery = rental_form.cleaned_data.get("date_of_delivery")
-            try:
-                controller.receive_car(allocated_booking,date_of_delivery)
-            except Exception as exc:
-                messages.warning(request,f'{exc}')
-                return redirect('agency-receive-car',pk)
-            messages.success(request,f'Car Delivered Successfully!')
-            return redirect('agency-receive-car',pk)
-        else:
-            messages.warning(request,f'Validation error')
-            return redirect('agency-receive-car',pk)
-
+    selected_invoice = controller.invoices.get_invoice(pk)
+    if selected_invoice.payment == None:
+        messages.warning(request,f'Payment corresponding to Invoice ID: {selected_invoice.id} has not been made!')
+        return redirect('agency-bookings-list')
     else:
-        rental_form = forms.RentalCarForm()
-        context = {
-            'booking': selected_booking,
-            'rental_form': rental_form
-        }
-        return render(request,'agency/receive_car.html',context)
+        if request.method == 'POST':
+            rental_form = forms.RentalCarForm(request.POST)
+            if rental_form.is_valid():
+                allocated_booking = selected_booking
+                date_of_delivery = rental_form.cleaned_data.get("date_of_delivery")
+                try:
+                    controller.receive_car(allocated_booking,date_of_delivery)
+                except Exception as exc:
+                    messages.warning(request,f'{exc}')
+                    return redirect('agency-receive-car',pk)
+                messages.success(request,f'Car Delivered Successfully!')
+                return redirect('agency-receive-car',pk)
+            else:
+                messages.warning(request,f'Validation error')
+                return redirect('agency-receive-car',pk)
 
+        else:
+            rental_form = forms.RentalCarForm()
+            context = {
+                'booking': selected_booking,
+                'rental_form': rental_form
+            }
+            return render(request,'agency/receive_car.html',context)
+
+@login_required
+def create_invoice(request,pk):
+    try:
+        invoice = controller.create_invoice(pk)
+        context = {
+            'invoice': invoice,
+        }
+        return render(request,'agency/invoice_detail.html',context)
+    except:
+        try:
+            invoice = controller.invoices.get_invoice(pk)
+            context = {
+                'invoice': invoice,
+            }
+            return render(request,'agency/invoice_detail.html',context)
+        except Exception as exc:
+            messages.warning(request,f'{exc}')
+            return redirect('agency-home')
+    
+@login_required
+def show_invoices(request):
+    invoices = controller.invoices.get_invoices(request.user)
+    context = {
+        'invoices':invoices,
+    }
+    return render(request,'agency/invoices_list.html',context)
+
+@login_required
+def delete_booking(request,pk):
+    is_deleted = controller.invoices.delete_invoice(pk)
+    if is_deleted == True:
+        messages.success(request,f'Deleted Booking and Invoice successfully!')
+    else:
+        messages.info(request,f'Booking does not exist!')
+    return redirect('agency-home')
+    
+@login_required
+def payment_choice(request,pk):
+    if request.method == 'POST':
+        payment_choice_form = forms.PaymentOptionForm(request.POST)
+        if payment_choice_form.is_valid():
+            payment_option = payment_choice_form.cleaned_data.get("payment_option")
+            return redirect('agency-make-payment',pk,payment_option)
+        else:
+            messages.warning(request,f'Error, could not select payment option')
+            return redirect('agency-payment-choice',pk)
+    else:
+        payment_choice_form = forms.PaymentOptionForm()
+        context = {
+            'payment_choice_form':payment_choice_form
+        }
+        return render(request,'agency/payment_choice.html',context)
+
+@login_required
+def make_payment(request,pk,payment_option):
+    # invoice = controller.invoices.get_invoice(pk)
+    if payment_option == 'CreditCard':
+        if request.method == 'POST':
+            payment_form = forms.PaymentbyCreditCardForm(request.POST)
+            if payment_form.is_valid():
+                amount = 0
+                payment_date = payment_form.cleaned_data.get("payment_date")
+                card_number = payment_form.cleaned_data.get("card_number")
+                code = payment_form.cleaned_data.get("code")
+                expiry_date = payment_form.cleaned_data.get("expiry_date")
+                credit_card = controller.payments.create_credit_card(card_number,code,expiry_date)
+                controller.make_payment(pk,amount,payment_date,credit_card)
+                messages.success(request,f'Payment by Credit Card Successful!')
+                return redirect('agency-invoices-list')
+            else:    
+                messages.warning(request,f'Error in validation!')
+                return redirect('agency-make-payment',pk,payment_option) 
+        else:
+            payment_form = forms.PaymentbyCreditCardForm()
+            context = {
+                'payment_form':payment_form
+            }
+            return render(request,'agency/make_payment.html',context)   
+    elif payment_option == 'Cash':
+        if request.method == 'POST':
+            payment_form = forms.PaymentbyCashForm(request.POST)
+            if payment_form.is_valid():
+                amount = payment_form.cleaned_data.get("amount")
+                payment_date = payment_form.cleaned_data.get("payment_date")
+                controller.make_payment(pk,amount,payment_date)
+                messages.success(request,f'Payment by Cash Successful!')
+                return redirect('agency-invoices-list')
+            else:
+                messages.warning(request,f'Error in validation!')
+                return redirect('agency-make-payment',pk,payment_option)
+        else:
+            payment_form = forms.PaymentbyCashForm()
+            context = {
+                'payment_form':payment_form
+            }
+            return render(request,'agency/make_payment.html',context)  
+            
+    
+        
+    
+
+
+
+
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser)
+# def return_car(request,pk):
+#     selected_rental = controller.rentals.get_rental(pk)
+#     if request.method == 'POST':
+#     return_form = forms.ReturnCarForm(request.POST)

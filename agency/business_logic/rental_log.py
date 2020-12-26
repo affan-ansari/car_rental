@@ -9,6 +9,13 @@ class RentalLog:
     # def get_rentals(self,user):
     #     rentals = RENTAL.objects.all()
     #     return rentals
+    def get_rental(self,pk):
+        try:
+            rental = RENTAL.objects.get(id=pk)
+            return rental
+        except ObjectDoesNotExist:
+            raise Exception(f'{pk} does not exist!')
+        
 
 
     def get_rentals(self,user):

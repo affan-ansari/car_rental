@@ -65,6 +65,7 @@ class BookingLog:
             customer=customer
             )
             new_booking.save()
+            return new_booking
 
     def get_booking(self,booking_id):
         try:

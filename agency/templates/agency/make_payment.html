@@ -1,0 +1,20 @@
+{% extends "agency/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" > Make Payment </legend>
+                <div class="alert alert-info border-bottom mb-4" role="alert">
+                    Date: YYYY-MM-DD
+                </div>
+                {{ payment_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit" name="update"> Pay Amount </button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
