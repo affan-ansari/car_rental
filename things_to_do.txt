@@ -12,16 +12,7 @@ Book Car:
 ->Driver booked too on same timeline for car.[DONE]
 
 Affan:
-->Check wherever you search from CNIC, check if DRIVER has been deleted or nah[DONE]
-->Implement that every User should only see their own Bookings[DONE]
-->Car Fare and car types in models.py[DONE]
-->Remove objects.all() from view[DONE]
-->Car Model mein changes.[DONE]
-->Implement that every User should only see their own Rentals[DONE]
-->CARMODEL new model and one to Many with Car.[DONE]
-->Change on Delete for car.[DISCUSS WITH ALI]
-
-->Create CRUD forms and views for CAR_MODEL
+->Only superuser can see driver page
 
 Ali:
 ->Payment Model and Invoice Model and link with booking.
