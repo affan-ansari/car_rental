@@ -123,18 +123,18 @@ class INVOICE(models.Model):
     days_booked = models.PositiveIntegerField(default=0)
 
 class LATEFINE(models.Model):
-    per_day_fine = models.PositiveIntegerField(default=0)
+    per_day_fine = models.PositiveIntegerField(default=10)
     days_late = models.PositiveIntegerField(default=0)
 
-class DAMAGES(models.Model):
-    DAMAGE_TYPE = (
-        ('Mechanical','Mechanical'),
-        ('Body Damage','Body Damage'),
-    )
-    type = models.CharField(max_length=15,null=True,choices=DAMAGE_TYPE)
+# class DAMAGES(models.Model):
+#     DAMAGE_TYPE = (
+#         ('Mechanical','Mechanical'),
+#         ('Body Damage','Body Damage'),
+#     )
+#     type = models.CharField(max_length=15,null=True,choices=DAMAGE_TYPE)
 
 class FINES(models.Model):
-    damages = models.OneToOneField(DAMAGES,null=True,on_delete=models.PROTECT)
+    damages = models.TextField(blank=True, default='')
     late_fine = models.OneToOneField(LATEFINE,null=True,on_delete=models.PROTECT)
     damages_amount = models.PositiveIntegerField(default=0)
     late_return_amount = models.PositiveIntegerField(default=0)

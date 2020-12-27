@@ -67,3 +67,8 @@ class CarList:
                 return searched_car
         except ObjectDoesNotExist:
             raise Exception(f'{reg_no} does not exist!')
+
+    def update_accident_details(self,reg_no,accident_details):
+        car = CAR.objects.get(reg_no=reg_no)
+        car.accident_details = accident_details
+        car.save()

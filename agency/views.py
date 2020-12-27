@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
-from .models import CAR, CREDIT_CARD,DRIVER,BOOKING,RENTAL,CAR_MODEL,PAYMENT,INVOICE,LATEFINE,DAMAGES,FINES
+from .models import CAR, CREDIT_CARD,DRIVER,BOOKING,RENTAL,CAR_MODEL,PAYMENT,INVOICE,LATEFINE,FINES
 # from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
 from . import forms
 
@@ -54,6 +54,7 @@ def BookingsView(request):
 @login_required
 def RentalsView(request):
     rentals = controller.rentals.get_rentals(request.user)
+    # car_return = controller.returns.get_return_by_rental_id(rentals.id)
     context = {'rentals':rentals}
     return render(request,'agency/rentals_list.html',context)
 
@@ -394,16 +395,57 @@ def make_payment(request,pk,payment_option):
             }
             return render(request,'agency/make_payment.html',context)  
             
-    
-        
-    
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def return_car(request,pk):
+    selected_rental = controller.rentals.get_rental(pk)
+    if request.method == 'POST':
+        return_car_form = forms.ReturnCarForm(request.POST)
+        if return_car_form.is_valid():
+            accident_details = return_car_form.cleaned_data.get("accident_details")
+            damages = return_car_form.cleaned_data.get("damages")
+            damages_amount = return_car_form.cleaned_data.get("damages_amount")
+            return_date = return_car_form.cleaned_data.get("return_date")
+            try:
+                car_return = controller.return_car(pk,accident_details,damages,damages_amount,return_date)
+                totalAmount = car_return.fine.late_return_amount + car_return.fine.damages_amount
+            except Exception as exc:
+                messages.warning(request,f'{exc}')
+                return redirect('agency-return-car',pk)
+            messages.success(request,f'Car Returned Successfully!')
+            return render(request,'agency/car_returned.html',{'car_return':car_return,'totalAmount':totalAmount})
+        else:
+            messages.warning(request,f'Error in Validation!')
+            return redirect('agency-return-car',pk)
+    else:
+        return_car_form = forms.ReturnCarForm()
+        context = {
+            'return_car_form':return_car_form,
+            'rental':selected_rental,
+        }
+        return render(request,'agency/return_car.html',context)
 
+@login_required
+def show_returns(request):
+    returns = controller.returns.get_returns(request.user)
+    context = {
+        'returns':returns,
+    }
+    return render(request,'agency/cars_returned.html',context)
 
-
-
-# @login_required
-# @user_passes_test(lambda u: u.is_superuser)
-# def return_car(request,pk):
-#     selected_rental = controller.rentals.get_rental(pk)
-#     if request.method == 'POST':
-#     return_form = forms.ReturnCarForm(request.POST)
+@login_required
+def show_return(request,pk):
+    try:
+        car_return =  controller.returns.get_return(pk)
+        totalAmount = car_return.fine.late_return_amount + car_return.fine.damages_amount
+        context = {
+            'car_return':car_return,
+            'totalAmount':totalAmount,
+        }
+        return render(request,'agency/car_returned.html',context)
+    except Exception as exc:
+            messages.warning(request,f'{exc}')
+            return redirect('agency-home')    
+    # selected_rental = controller.rentals.get_rental(pk)
+    # if request.method == 'POST':
+    #     return_form = forms.ReturnCarForm(request.POST)

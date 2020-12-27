@@ -1,0 +1,26 @@
+{% extends "agency/base.html" %}
+{% load static %}
+{% block content %}
+{% for return in returns %}
+    <div class="col-md-8">
+        <div class = "content-section">
+            <h1>Return Details:</h1>
+            {% if user.is_superuser %}
+                <h4>Customer Username: {{ return.rental.booking.customer.username}}</h4>
+            {% endif %}
+                <hr>
+                <h3><a href="{% url 'return-detail' return.id %}">Return ID: {{ return.id }}</a></h3>
+                <h4>{{ return.rental.booking.allocated_car.car_model.make }} {{ invoice.booking.allocated_car.car_model.model }}</h4>
+                <h4>{{ return.rental.booking.allocated_car.reg_no }}</h4>
+                <h4>{{ return.rental.booking.start_date_time }}</h4>
+                <h4>{{ return.rental.booking.end_date_time }}</h4>
+                <h4>{{ return.rental.booking.pickup_location }}</h4>
+                <hr>
+                <h5>Return Date: {{ return.return_date }}</h5>
+                <h5>Late Delivery Fine: ${{ return.fine.late_return_amount }}</h5>
+                <h5>Damages Amount : ${{ return.fine.damages_amount }}</h5>
+                <hr>
+        </div>
+    </div>
+{% endfor %}
+{% endblock content %}

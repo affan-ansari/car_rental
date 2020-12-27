@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'agency.apps.AgencyConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
-
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

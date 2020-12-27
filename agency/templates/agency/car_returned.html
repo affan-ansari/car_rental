@@ -1,0 +1,29 @@
+{% extends "agency/base.html" %}
+{% load static %}
+{% block content %}
+<div class="col-md-8">
+    <div class = "content-section">
+        <h1>Car Return Details:</h1>
+        <hr>
+        <h4>{{ car_return.rental.booking.allocated_car.car_model.make }} {{ car_return.rental.booking.allocated_car.car_model.model }}</h4>
+        <h4>{{ car_return.rental.booking.allocated_car.reg_no }}</h4>
+        <h4>{{ car_return.rental.booking.start_date_time }}</h4>
+        <h4>{{ car_return.rental.booking.end_date_time }}</h4>
+        <h4>{{ car_return.rental.booking.pickup_location }}</h4>
+        <hr>
+        <h5>Return Date: {{ car_return.return_date }}</h5>
+        <h5>Late Delivery Fine: ${{ car_return.fine.late_return_amount }}</h5>
+        <h5>Damages Amount: ${{ car_return.fine.damages_amount }}</h5>
+        <h5>Total Amount: ${{ totalAmount }}</h5>
+        <hr>
+        {% comment %} {% if invoice.payment %}
+            <h5>Status: Paid</h5>
+            <h5>Balance: ${{ invoice.payment.balance }}</h5>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'agency-payment-choice' invoice.booking.id %}"> Make Payment </a>
+            <a class="btn btn-danger" href="{% url 'agency-cancel-booking' invoice.id %}">Cancel Booking</a>
+        {% endif %} {% endcomment %}
+        
+    </div>
+</div>
+{% endblock content %}

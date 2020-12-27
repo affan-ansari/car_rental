@@ -34,5 +34,9 @@ urlpatterns = [
     path('invoices',views.show_invoices,name='agency-invoices-list'),
     path('booking/<str:pk>/invoice/payment_choice',views.payment_choice,name='agency-payment-choice'),
     path('booking/<str:pk>/invoice/<str:payment_option>/payment',views.make_payment,name='agency-make-payment'),
+
+    path('rental/<str:pk>/return_car',views.return_car,name='agency-return-car'),
+    path('returns',views.show_returns,name='agency-returns-list'),
+    path('return/<str:pk>/',views.show_return,name='return-detail'),
 ]
 

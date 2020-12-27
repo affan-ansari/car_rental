@@ -55,9 +55,16 @@ class RentalCarForm(forms.ModelForm):
         fields = ['date_of_delivery']
 
 class ReturnCarForm(forms.ModelForm):
+    # ACCIDENT_CHOICES = (
+    #     ('Mechanical','Mechanical'),
+    #     ('Body Damage','Body Damage'),
+    # )
+    accident_details = forms.CharField(widget=forms.Textarea)
+    damages = forms.CharField(label = "Damages")
+    damages_amount = forms.IntegerField(label = "Damages Amount")
     class Meta:
         model = RETURNCAR
-        fields = '__all__'
+        fields = ['return_date']
 
 class PaymentOptionForm(forms.Form):
     PAYMENT_CHOICES = (

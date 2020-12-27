@@ -1,9 +1,11 @@
+from agency.business_logic.return_car import ReturnCar
 from .car_list import CarList
 from .driver_list import DriverList
 from .booking_log import BookingLog
 from .rental_log import RentalLog
 from .invoice_log import InvoiceLog
 from .payment_log import PaymentLog
+from .fines import Fines
 class Agency:
     def __init__(self):
         self.cars = CarList()
@@ -12,6 +14,8 @@ class Agency:
         self.rentals = RentalLog()
         self.invoices = InvoiceLog()
         self.payments = PaymentLog()
+        self.returns = ReturnCar()
+        self.fines = Fines()
 
     def add_car(self,car_model,reg_no,color,fuel,fare,image):
         self.cars.add_car(car_model,reg_no,color,fuel,fare,image)
@@ -48,3 +52,10 @@ class Agency:
 
     def make_payment(self,booking_id,amount,payment_date,credit_card=None):
         self.payments.create_payment(booking_id,amount,payment_date,credit_card)
+
+    def return_car(self,rental_id,accident_details,damages,damages_amount,return_date):
+        selected_rental = self.rentals.get_rental(rental_id)
+        self.cars.update_accident_details(selected_rental.booking.allocated_car.reg_no,accident_details)
+        fine = self.fines.create_fine(selected_rental,damages,damages_amount,return_date)
+        return self.returns.return_car(selected_rental,fine,return_date)
+        
