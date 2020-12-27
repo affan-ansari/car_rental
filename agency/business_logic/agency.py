@@ -30,6 +30,9 @@ class Agency:
     def delete_car(self,reg_no):
         return self.cars.delete_car(reg_no)
 
+    def browse_cars():
+        return self.cars.get_cars()
+
     def add_driver(self,CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         self.drivers.add_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)
 

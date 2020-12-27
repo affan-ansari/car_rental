@@ -52,19 +52,19 @@ def home(request):
     return render(request, 'agency/home.html', context)
 
 def browse_cars(request):
-        cars =  controller.cars.get_cars()
+        filtered_cars =  controller.browse_cars()
         if request.method == 'POST':
             car_filter = CarFilter(request.POST,queryset=cars)
-            cars = car_filter.qs
+            filtered_cars = car_filter.qs
             context = {
-                'cars': cars
+                'cars': filtered_cars
             }
             return render(request,'agency/home.html',context)
         else:
             car_filter = CarFilter()
             context = {
                 'car_filter': car_filter,
-                'cars': cars
+                'cars': filtered_cars
             }
             return render(request,'agency/browse_cars.html',context)
 
