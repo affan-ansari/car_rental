@@ -2,8 +2,10 @@ from .booking import Booking
 from ..models import BOOKING
 from ..models import CAR
 from ..models import DRIVER
+from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.utils import timezone
 
 class BookingLog:
     def __init__(self):
@@ -18,6 +20,8 @@ class BookingLog:
             return bookings
 
     def create_booking(self,customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed):
+        if start_date_time <= timezone.now():
+            raise Exception("Invalid dates! Start Date must be greater than today's date")
         if start_date_time >= end_date_time:
             raise Exception("Invalid dates! Start Date must be less than End Date!")
         allocated_driver = None

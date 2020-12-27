@@ -7,9 +7,10 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
 from .models import CAR, CREDIT_CARD,DRIVER,BOOKING,RENTAL,CAR_MODEL,PAYMENT,INVOICE,LATEFINE,FINES
+from .filters import CarFilter
 # from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
 from . import forms
-
+from django.utils import timezone
 controller = Agency()
 
 def home(request):
@@ -17,6 +18,23 @@ def home(request):
         'cars': controller.cars.get_cars()#Cars which are not deleted.
     }
     return render(request, 'agency/home.html', context)
+
+def browse_cars(request):
+        cars =  controller.cars.get_cars()
+        if request.method == 'POST':
+            car_filter = CarFilter(request.POST,queryset=cars)
+            cars = car_filter.qs
+            context = {
+                'cars': cars
+            }
+            return render(request,'agency/home.html',context)
+        else:
+            car_filter = CarFilter()
+            context = {
+                'car_filter': car_filter,
+                'cars': cars
+            }
+            return render(request,'agency/browse_cars.html',context)
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -316,7 +334,7 @@ def create_invoice(request,pk):
         except Exception as exc:
             messages.warning(request,f'{exc}')
             return redirect('agency-home')
-    
+
 @login_required
 def show_invoices(request):
     invoices = controller.invoices.get_invoices(request.user)
@@ -333,7 +351,7 @@ def delete_booking(request,pk):
     else:
         messages.info(request,f'Booking does not exist!')
     return redirect('agency-home')
-    
+
 @login_required
 def payment_choice(request,pk):
     if request.method == 'POST':
@@ -367,15 +385,15 @@ def make_payment(request,pk,payment_option):
                 controller.make_payment(pk,amount,payment_date,credit_card)
                 messages.success(request,f'Payment by Credit Card Successful!')
                 return redirect('agency-invoices-list')
-            else:    
+            else:
                 messages.warning(request,f'Error in validation!')
-                return redirect('agency-make-payment',pk,payment_option) 
+                return redirect('agency-make-payment',pk,payment_option)
         else:
             payment_form = forms.PaymentbyCreditCardForm()
             context = {
                 'payment_form':payment_form
             }
-            return render(request,'agency/make_payment.html',context)   
+            return render(request,'agency/make_payment.html',context)
     elif payment_option == 'Cash':
         if request.method == 'POST':
             payment_form = forms.PaymentbyCashForm(request.POST)
@@ -446,6 +464,3 @@ def show_return(request,pk):
     except Exception as exc:
             messages.warning(request,f'{exc}')
             return redirect('agency-home')    
-    # selected_rental = controller.rentals.get_rental(pk)
-    # if request.method == 'POST':
-    #     return_form = forms.ReturnCarForm(request.POST)

@@ -8,10 +8,12 @@ class CarList:
 
     def add_car(self,car_model,reg_no,color,fuel,fare,image):
         reg_no = reg_no.upper()
+        color = color.capitalize()
         new_car = CAR(car_model=car_model,reg_no=reg_no,color=color,fuel=fuel,fare=fare,image=image)
         new_car.save()
 
     def add_carmodel(self,make,model,body_type,engine_capacity,seats,transmission):
+        make = make.title()
         new_carmodel = CAR_MODEL(
             make=make,model=model,body_type=body_type,
             engine_capacity=engine_capacity,seats=seats,transmission=transmission
@@ -33,26 +35,12 @@ class CarList:
             return False
 
     def update_car(self,searched_car,color,fuel,image,fare,accident_details):
-        searched_car.color = color
+        searched_car.color = color.capitalize()
         searched_car.fuel = fuel
         searched_car.image = image
         searched_car.accident_details = accident_details
         searched_car.fare = fare
         searched_car.save()
-        # update_car = CAR.objects.get(reg_no=reg_no)
-        # update_car.reg_no = reg_no
-        # update_car.make = make
-        # update_car.model = model
-        # update_car.body_type = body_type
-        # update_car.engine_capacity = engine_capacity
-        # update_car.seats = seats
-        # update_car.color = color
-        # update_car.transmission = transmission
-        # update_car.fuel = fuel
-        # update_car.image = image
-        # update_car.accident_details = accident_details
-        # update_car.available = available
-        # update_car.save()
 
     def get_cars(self):
         cars = CAR.objects.filter(available=True)
@@ -72,3 +60,21 @@ class CarList:
         car = CAR.objects.get(reg_no=reg_no)
         car.accident_details = accident_details
         car.save()
+        
+    def get_filtered_cars(self,max_fare,color,fuel,body_type,max_engine_capacity,transmission):
+        if max_fare == None:
+            max_fare = 10000
+        if max_engine_capacity == None:
+            max_engine_capacity = 10000
+        if color == '':
+            filtered_cars = CAR.objects.filter(
+                fare__car_fare__lte=max_fare,fuel=fuel,
+                car_model__body_type=body_type,car_model__transmission=transmission
+            )
+            return filtered_cars
+        else:
+            filtered_cars = CAR.objects.filter(
+                fare__car_fare__lte=max_fare,fuel=fuel,color=color,
+                car_model__body_type=body_type,car_model__transmission=transmission
+            )
+            return filtered_cars

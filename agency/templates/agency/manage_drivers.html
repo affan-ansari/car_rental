@@ -5,6 +5,8 @@
         <div class="content-section">
             <h3>Manage Drivers</h3>
             <ul class="list-group">
+            href="{% url 'agency-drivers-list' %}
+                <a class="btn btn-primary btn-lg btn-block" href="{% url 'agency-drivers-list' %}" role="button">View Drivers</a>
                 <a class="btn btn-primary btn-lg btn-block" href="{% url 'agency-register-driver' %}" role="button">Add Driver</a>
                 <a class="btn btn-primary btn-lg btn-block" href="{% url 'agency-search-driver' %}" role="button">Update Driver</a>
                 <a class="btn btn-danger btn-lg btn-block" href="{% url 'agency-delete-driver' %}" role="button">Delete Driver</a>

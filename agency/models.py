@@ -20,17 +20,16 @@ class FARE(models.Model):
 
 class CAR_MODEL(models.Model):
     BODY_CHOICES = (
-        ('SDN', 'SEDAN'),
-        ('CPE', 'COUPE'),
-        ('STW', 'STATION WAGON'),
-        ('HTB', 'HATCHBACK'),
-        ('CNV', 'CONVERTABLE'),
+        ('HATCHBACK', 'HATCHBACK'),
+        ('SEDAN', 'SEDAN'),
+        ('COUPE', 'COUPE'),
+        ('STATION WAGON', 'STATION WAGON'),
+        ('CONVERTABLE', 'CONVERTABLE'),
     )
     TRANSMISSION_CHOICES = (
-        ('MAN', 'MANUAL'),
-        ('AUT', 'AUTOMATIC'),
+        ('MANUAL', 'MANUAL'),
+        ('AUTOMATIC', 'AUTOMATIC'),
     )
-
     make = models.CharField(max_length=100)
     model = models.PositiveIntegerField()
     body_type = models.CharField(max_length=100, choices=BODY_CHOICES)
@@ -47,8 +46,8 @@ class CAR_MODEL(models.Model):
 
 class CAR(models.Model):
     FUEL_CHOICES = (
-        ('PET', 'PETROL'),
-        ('DSL', 'DIESEL'),
+        ('PETROL', 'PETROL'),
+        ('DIESEL', 'DIESEL'),
     )
 
     car_model = models.ForeignKey(CAR_MODEL,on_delete=models.PROTECT)
