@@ -14,9 +14,10 @@ class PaymentLog:
         new_credit_card.save()
         return new_credit_card
 
-    def create_payment(self,booking_id,amount,payment_date,credit_card):
+    def create_payment(self,booking_id,amount,payment_date,card_number,code,expiry_date):
         invoice = INVOICE.objects.get(booking__id=booking_id)
-        if credit_card == None:
+        if card_number == '':
+            credit_card = None
             balance = amount - invoice.totalAmount
             new_payment = PAYMENT(
                 amount=amount,
@@ -28,6 +29,7 @@ class PaymentLog:
             invoice.payment = new_payment
             invoice.save()
         else:
+            credit_card = self.create_credit_card(card_number,code,expiry_date)
             new_payment = PAYMENT(
                 amount=invoice.totalAmount,
                 payment_date=payment_date,

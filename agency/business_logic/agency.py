@@ -6,6 +6,7 @@ from .rental_log import RentalLog
 from .invoice_log import InvoiceLog
 from .payment_log import PaymentLog
 from .fines import Fines
+from django.utils import timezone
 class Agency:
     def __init__(self):
         self.cars = CarList()
@@ -50,12 +51,12 @@ class Agency:
     def delete_invoice(self,invoice_id):
         return self.invoices.delete_invoice(invoice_id)
 
-    def make_payment(self,booking_id,amount,payment_date,credit_card=None):
-        self.payments.create_payment(booking_id,amount,payment_date,credit_card)
+    def make_payment(self,booking_id,amount,payment_date,card_number='',code='',expiry_date=timezone.now()):
+        self.payments.create_payment(booking_id,amount,payment_date,card_number,code,expiry_date)
 
     def return_car(self,rental_id,accident_details,damages,damages_amount,return_date):
         selected_rental = self.rentals.get_rental(rental_id)
         self.cars.update_accident_details(selected_rental.booking.allocated_car.reg_no,accident_details)
         fine = self.fines.create_fine(selected_rental,damages,damages_amount,return_date)
         return self.returns.return_car(selected_rental,fine,return_date)
-        
+

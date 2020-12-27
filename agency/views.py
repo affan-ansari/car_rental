@@ -381,8 +381,8 @@ def make_payment(request,pk,payment_option):
                 card_number = payment_form.cleaned_data.get("card_number")
                 code = payment_form.cleaned_data.get("code")
                 expiry_date = payment_form.cleaned_data.get("expiry_date")
-                credit_card = controller.payments.create_credit_card(card_number,code,expiry_date)
-                controller.make_payment(pk,amount,payment_date,credit_card)
+                # credit_card = controller.payments.create_credit_card(card_number,code,expiry_date)
+                controller.make_payment(pk,amount,payment_date,card_number,code,expiry_date)
                 messages.success(request,f'Payment by Credit Card Successful!')
                 return redirect('agency-invoices-list')
             else:
@@ -411,8 +411,8 @@ def make_payment(request,pk,payment_option):
             context = {
                 'payment_form':payment_form
             }
-            return render(request,'agency/make_payment.html',context)  
-            
+            return render(request,'agency/make_payment.html',context)
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def return_car(request,pk):
@@ -463,4 +463,4 @@ def show_return(request,pk):
         return render(request,'agency/car_returned.html',context)
     except Exception as exc:
             messages.warning(request,f'{exc}')
-            return redirect('agency-home')    
+            return redirect('agency-home')
