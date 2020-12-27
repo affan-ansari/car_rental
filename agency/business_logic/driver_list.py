@@ -7,6 +7,8 @@ class DriverList:
         pass
 
     def add_driver(self, CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
+        first_name = first_name.title()
+        last_name = last_name.title()
         new_driver = DRIVER(
             CNIC=CNIC,first_name=first_name,last_name=last_name,
             email=email,contact_number=contact_number,address=address,hourly_rate=hourly_rate
@@ -27,8 +29,8 @@ class DriverList:
     def update_driver(self,CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         update_driver = DRIVER.objects.get(CNIC=CNIC)
         update_driver.CNIC = CNIC
-        update_driver.first_name = first_name
-        update_driver.last_name = last_name
+        update_driver.first_name = first_name.title()
+        update_driver.last_name = last_name.title()
         update_driver.email = email
         update_driver.contact_number = contact_number
         update_driver.address = address

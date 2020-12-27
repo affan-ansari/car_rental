@@ -1,0 +1,30 @@
+{% extends "agency/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" > Filter Cars </legend>
+                {{ car_filter.form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit" name="search"> Filter </button>
+            </div>
+        </form>
+    </div>
+
+    {% for car in cars %}
+    <div class="col-md-8">
+        <div class = "content-section">
+            <img class="img-thumbnail" src = "{{ car.image.url }}"/>
+            <h2><a href="{% url 'car-detail' car.reg_no %}">{{ car.car_model.make }}</a></h2>
+            <h4>{{ car.car_model.model }}</h4>
+            <h5>${{ car.fare.car_fare }}</h5>
+            <h5>{{ car.car_model.transmission }}</h5>
+            <h5>{{ car.color }}</h5>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock content %}

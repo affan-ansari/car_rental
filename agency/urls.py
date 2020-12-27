@@ -13,8 +13,9 @@ urlpatterns = [
     path('car/<str:pk>/update/', views.update_car, name='agency-update-car'),
     path('car/<str:pk>/book/', views.book_car, name='agency-book-car'),
     path('search_car',views.search_car,name='agency-search-car'),
-    path('search_driver',views.search_driver,name='agency-search-driver'),
+    path('browse_cars',views.browse_cars,name='agency-browse-car'),
 
+    path('search_driver',views.search_driver,name='agency-search-driver'),
     path('driver/<str:pk>/update_driver/', views.update_driver, name='agency-update-driver'),
     path('driver/<str:pk>/', views.DriverDetailView.as_view(), name='driver-detail'),
     path('drivers', DriverListView.as_view(),name='agency-drivers-list'),

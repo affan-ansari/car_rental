@@ -13,6 +13,8 @@ Book Car:
 
 Affan:
 ->Only superuser can see driver page
+->Add payment date to now wali cheez
+->Browse cars (filter by fare,color,transmission,fuel)
 
 Ali:
 ->Payment Model and Invoice Model and link with booking.
