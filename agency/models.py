@@ -4,7 +4,6 @@ from django.urls import reverse
 from PIL import Image
 from .business_logic.car import Car
 from users.models import User
-# class CARMODEL(models.Model):
 
 class FARE(models.Model):
     TYPE_CHOICES = (
@@ -85,18 +84,14 @@ class BOOKING(models.Model):
     pickup_location = models.TextField(blank=True, default='')
     is_driver_needed = models.BooleanField()
     customer = models.ForeignKey(User,on_delete=models.PROTECT)
-    #completed = models.BooleanField() IF TABBY SAY WE DO marjao........
-    #invoice... !!! NOT PAYMENT!!!!! INVOICE HAS PAYMENT IN IT.
-    #payment_received = models.BooleanField(default=False)
-    #payment = models.OnetoOneField(Payment,blah blah)
     def __str__(self):
-        #return 'Booking:' + str(self.id) + self.allocated_car
+
         return 'Booking:' + str(self.id) + ' Customer:' + str(self.customer.pk)
 
 class RENTAL(models.Model):
     booking = models.OneToOneField(BOOKING,on_delete=models.PROTECT,related_name='rentals')
     date_of_delivery = models.DateTimeField()
-    #driver_delivery = models.BooleanField() # Needed or not?
+
 
 class CREDIT_CARD(models.Model):
     card_number = models.CharField(max_length=25,default="")
@@ -125,12 +120,6 @@ class LATEFINE(models.Model):
     per_day_fine = models.PositiveIntegerField(default=10)
     days_late = models.PositiveIntegerField(default=0)
 
-# class DAMAGES(models.Model):
-#     DAMAGE_TYPE = (
-#         ('Mechanical','Mechanical'),
-#         ('Body Damage','Body Damage'),
-#     )
-#     type = models.CharField(max_length=15,null=True,choices=DAMAGE_TYPE)
 
 class FINES(models.Model):
     damages = models.TextField(blank=True, default='')
