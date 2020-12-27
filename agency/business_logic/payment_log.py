@@ -1,4 +1,5 @@
 from ..models import CREDIT_CARD, PAYMENT,INVOICE
+from .invoice_log import *
 from django.core.exceptions import ObjectDoesNotExist
 
 class PaymentLog:
@@ -15,7 +16,7 @@ class PaymentLog:
         return new_credit_card
 
     def create_payment(self,booking_id,amount,payment_date,card_number,code,expiry_date):
-        invoice = INVOICE.objects.get(booking__id=booking_id)
+        invoice = InvoiceLog().get_invoice(booking_id)
         if card_number == '':
             credit_card = None
             balance = amount - invoice.totalAmount

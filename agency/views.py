@@ -1,18 +1,50 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required,user_passes_test
-from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView
 from .business_logic.agency import Agency
-from .models import CAR, CREDIT_CARD,DRIVER,BOOKING,RENTAL,CAR_MODEL,PAYMENT,INVOICE,LATEFINE,FINES
+from .models import CAR,DRIVER,BOOKING,RENTAL
 from .filters import CarFilter
-# from .forms import RegisterCarForm,RegisterDriverForm,SearchCarForm,SearchDriverForm,DriverUpdateForm,CarUpdateForm
 from . import forms
-from django.utils import timezone
+
+
+# Initializing Controller
 controller = Agency()
 
+# Detailed Views
+class CarDetailView(DetailView):
+    model = CAR
+
+class DriverListView(ListView):
+    model = DRIVER
+    template_name= 'agency/drivers_list.html'
+    context_object_name = 'drivers'
+
+class DriverDetailView(DetailView):
+     model = DRIVER
+
+class BookingsDetailsView(DetailView):
+     model = BOOKING
+
+class RentalsDetailsView(DetailView):
+     model = RENTAL
+
+# General Views
+@login_required
+def BookingsView(request):
+    bookings = controller.bookings.get_bookings(request.user)
+    context = {'bookings':bookings}
+    return render(request, 'agency/bookings_list.html',context)
+
+@login_required
+def RentalsView(request):
+    rentals = controller.rentals.get_rentals(request.user)
+    # car_return = controller.returns.get_return_by_rental_id(rentals.id)
+    context = {'rentals':rentals}
+    return render(request,'agency/rentals_list.html',context)
+
+# Function Views
 def home(request):
     context = {
         'cars': controller.cars.get_cars()#Cars which are not deleted.
@@ -36,45 +68,115 @@ def browse_cars(request):
             }
             return render(request,'agency/browse_cars.html',context)
 
+# MAJOR USE CASES
+@login_required
+@user_passes_test(lambda u: u.is_superuser == False)
+def book_car(request,pk):
+    selected_car = controller.cars.get_car(pk)
+    if request.method == 'POST':
+        book_form = forms.BookCarForm(request.POST)
+        if book_form.is_valid():
+            allocated_car = selected_car
+            start_date_time= book_form.cleaned_data.get("start_date_time")
+            end_date_time= book_form.cleaned_data.get("end_date_time")
+            pickup_location= book_form.cleaned_data.get("pickup_location")
+            is_driver_needed= book_form.cleaned_data.get("is_driver_needed")
+            customer = request.user
+            try:
+                new_booking = controller.book_car(customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
+            except Exception as exc:
+                messages.warning(request,f'{exc}')
+                return redirect('agency-book-car',pk)
+            #Put try except for Exception (if date time not available driver).
+            messages.success(request,f'Car Booked Successfully')
+            return redirect('agency-create-invoice',new_booking.id)
+        else:
+            messages.warning(request,f'Validation error')
+            return redirect('agency-book-car',pk)
+
+    else:
+        book_form = forms.BookCarForm()
+        # book_form = forms.BookCarForm(instance = selected_car)
+        context = {
+            'car': selected_car,
+            'book_form': book_form
+        }
+        return render(request,'agency/book_car.html',context)
+
+@login_required
+def delete_booking(request,pk):
+    is_deleted = controller.invoices.delete_invoice(pk)
+    if is_deleted == True:
+        messages.success(request,f'Deleted Booking and Invoice successfully!')
+    else:
+        messages.info(request,f'Booking does not exist!')
+    return redirect('agency-home')
+
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def manage_cars(request):
-    return render(request, 'agency/manage_cars.html')
+def receive_car(request,pk):
+    selected_booking = controller.bookings.get_booking(pk)
+    selected_invoice = controller.invoices.get_invoice(pk)
+    if selected_invoice.payment == None:
+        messages.warning(request,f'Payment corresponding to Invoice ID: {selected_invoice.id} has not been made!')
+        return redirect('agency-bookings-list')
+    else:
+        if request.method == 'POST':
+            rental_form = forms.RentalCarForm(request.POST)
+            if rental_form.is_valid():
+                # allocated_booking = selected_booking
+                date_of_delivery = rental_form.cleaned_data.get("date_of_delivery")
+                try:
+                    controller.receive_car(pk,date_of_delivery)
+                except Exception as exc:
+                    messages.warning(request,f'{exc}')
+                    return redirect('agency-receive-car',pk)
+                messages.success(request,f'Car Delivered Successfully!')
+                return redirect('agency-receive-car',pk)
+            else:
+                messages.warning(request,f'Validation error')
+                return redirect('agency-receive-car',pk)
+
+        else:
+            rental_form = forms.RentalCarForm()
+            context = {
+                'booking': selected_booking,
+                'rental_form': rental_form
+            }
+            return render(request,'agency/receive_car.html',context)
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def manage_drivers(request):
-    return render(request, 'agency/manage_drivers.html')
+def return_car(request,pk):
+    selected_rental = controller.rentals.get_rental(pk)
+    if request.method == 'POST':
+        return_car_form = forms.ReturnCarForm(request.POST)
+        if return_car_form.is_valid():
+            accident_details = return_car_form.cleaned_data.get("accident_details")
+            damages = return_car_form.cleaned_data.get("damages")
+            damages_amount = return_car_form.cleaned_data.get("damages_amount")
+            return_date = return_car_form.cleaned_data.get("return_date")
+            try:
+                car_return = controller.return_car(pk,accident_details,damages,damages_amount,return_date)
+                totalAmount = car_return.fine.late_return_amount + car_return.fine.damages_amount
+            except Exception as exc:
+                messages.warning(request,f'{exc}')
+                return redirect('agency-return-car',pk)
+            messages.success(request,f'Car Returned Successfully!')
+            return render(request,'agency/car_returned.html',{'car_return':car_return,'totalAmount':totalAmount})
+        else:
+            messages.warning(request,f'Error in Validation!')
+            return redirect('agency-return-car',pk)
+    else:
+        return_car_form = forms.ReturnCarForm()
+        context = {
+            'return_car_form':return_car_form,
+            'rental':selected_rental,
+        }
+        return render(request,'agency/return_car.html',context)
 
-class CarDetailView(DetailView):
-    model = CAR
-
-class DriverListView(ListView):
-    model = DRIVER
-    template_name= 'agency/drivers_list.html'
-    context_object_name = 'drivers'
-
-class DriverDetailView(DetailView):
-     model = DRIVER
-
-class BookingsDetailsView(DetailView):
-     model = BOOKING
-
-class RentalsDetailsView(DetailView):
-     model = RENTAL
-
-@login_required
-def BookingsView(request):
-    bookings = controller.bookings.get_bookings(request.user)
-    context = {'bookings':bookings}
-    return render(request, 'agency/bookings_list.html',context)
-
-@login_required
-def RentalsView(request):
-    rentals = controller.rentals.get_rentals(request.user)
-    # car_return = controller.returns.get_return_by_rental_id(rentals.id)
-    context = {'rentals':rentals}
-    return render(request,'agency/rentals_list.html',context)
+# CAR CRUD OPERATIONS      
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -115,6 +217,46 @@ def register_carmodel(request):
         form = forms.RegisterCarModelForm()
     return render(request,'agency/register_carmodel.html',{'form': form})
 
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def update_car(request,pk):
+    searched_car = controller.cars.get_car(pk)
+    if request.method == 'POST':
+        update_form = forms.CarUpdateForm(request.POST, request.FILES, instance=searched_car)
+        if update_form.is_valid():
+            color = update_form.cleaned_data.get("color")
+            fuel = update_form.cleaned_data.get("fuel")
+            image = update_form.cleaned_data.get("image")
+            accident_details = update_form.cleaned_data.get("accident_details")
+            fare = update_form.cleaned_data.get("fare")
+
+            controller.update_car(pk,color,fuel,image,fare,accident_details)
+            messages.success(request,f'Car Updated Succuessfully')
+            return redirect('agency-home')
+    else:
+        update_form = forms.CarUpdateForm(instance=searched_car)
+        context = {'update_form': update_form}
+        return render(request,'agency/update_car.html',context )
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def delete_car(request):
+    if request.method == 'POST':
+        form = forms.SearchCarForm(request.POST)
+        if form.is_valid():
+            reg_no = form.cleaned_data["reg_no"]
+            is_deleted = controller.delete_car(reg_no)
+            if is_deleted == True:
+                messages.success(request, f'Car deleted successfully!')
+            else:
+                messages.info(request, f'Car does not exist!')
+            return redirect ('agency-delete-car')
+    else:
+        form = forms.SearchCarForm()
+    return render(request,'agency/delete_car.html',{'form': form})
+
+
 def search_car(request):
     if request.method == 'POST':
         search_form = forms.SearchCarForm(request.POST)
@@ -133,42 +275,33 @@ def search_car(request):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def update_car(request,pk):
-    searched_car = controller.cars.get_car(pk)
-    if request.method == 'POST':
-        update_form = forms.CarUpdateForm(request.POST, request.FILES, instance=searched_car)
-        if update_form.is_valid():
-            color = update_form.cleaned_data.get("color")
-            fuel = update_form.cleaned_data.get("fuel")
-            image = update_form.cleaned_data.get("image")
-            accident_details = update_form.cleaned_data.get("accident_details")
-            fare = update_form.cleaned_data.get("fare")
+def manage_cars(request):
+    return render(request, 'agency/manage_cars.html')
 
-            controller.update_car(searched_car,color,fuel,image,fare,accident_details)
-            messages.success(request,f'Car Updated Succuessfully')
-            return redirect('agency-home')
-    else:
-        update_form = forms.CarUpdateForm(instance=searched_car)
-        context = {'update_form': update_form}
-        return render(request,'agency/update_car.html',context )
+# DRIVER CRUD OPERATIONS
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def search_driver(request):
+def register_driver(request):
     if request.method == 'POST':
-        search_form = forms.SearchDriverForm(request.POST)
-        if search_form.is_valid():
-            CNIC = search_form.cleaned_data["CNIC"]
-            try:
-                searched_driver = controller.drivers.get_driver(CNIC)
-                messages.success(request, f'Driver found!')
-                return HttpResponseRedirect("driver/{CNIC}/".format(CNIC= searched_driver.CNIC))
-            except Exception as exc:
-                messages.warning(request, f'{exc}')
-                return redirect('agency-search-driver')
+        form = forms.RegisterDriverForm(request.POST)
+        if form.is_valid():
+            CNIC = form.cleaned_data.get("CNIC")
+            first_name = form.cleaned_data.get("first_name")
+            last_name = form.cleaned_data.get("last_name")
+            email = form.cleaned_data.get("email")
+            contact_number = form.cleaned_data.get("contact_number")
+            address = form.cleaned_data.get("address")
+            hourly_rate = form.cleaned_data.get("hourly_rate")
+
+            controller.add_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)
+            messages.success(request, f'Driver added successfully!')
+            return redirect('agency-register-driver')
     else:
-        search_form = forms.SearchDriverForm()
-        return render(request,'agency/search_driver.html',{'search_form': search_form})
+        form = forms.RegisterDriverForm()
+    return render(request,'agency/register_driver.html',{'form': form})
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -194,78 +327,6 @@ def update_driver(request,pk):
         return render(request,'agency/update_driver.html',context )
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser == False)
-def book_car(request,pk):
-    selected_car = controller.cars.get_car(pk)
-    if request.method == 'POST':
-        book_form = forms.BookCarForm(request.POST)
-        if book_form.is_valid():
-            allocated_car = selected_car
-            start_date_time= book_form.cleaned_data.get("start_date_time")
-            end_date_time= book_form.cleaned_data.get("end_date_time")
-            pickup_location= book_form.cleaned_data.get("pickup_location")
-            is_driver_needed= book_form.cleaned_data.get("is_driver_needed")
-            customer = request.user
-            try:
-                new_booking = controller.book_car(customer,allocated_car,start_date_time,end_date_time,pickup_location,is_driver_needed)
-            except Exception as exc:
-                messages.warning(request,f'{exc}')
-                return redirect('agency-book-car',pk)
-            #Put try except for Exception (if date time not available driver).
-            messages.success(request,f'Car Booked Successfully')
-            return redirect('agency-create-invoice',new_booking.id)
-        else:
-            messages.warning(request,f'Validation error')
-            return redirect('agency-book-car',pk)
-
-    else:
-        book_form = forms.BookCarForm()
-        # book_form = forms.BookCarForm(instance = selected_car)
-        context = {
-            'car': selected_car,
-            'book_form': book_form
-        }
-        return render(request,'agency/book_car.html',context)
-
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def delete_car(request):
-    if request.method == 'POST':
-        form = forms.SearchCarForm(request.POST)
-        if form.is_valid():
-            reg_no = form.cleaned_data["reg_no"]
-            is_deleted = controller.delete_car(reg_no)
-            if is_deleted == True:
-                messages.success(request, f'Car deleted successfully!')
-            else:
-                messages.info(request, f'Car does not exist!')
-            return redirect ('agency-delete-car')
-    else:
-        form = forms.SearchCarForm()
-    return render(request,'agency/delete_car.html',{'form': form})
-
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def register_driver(request):
-    if request.method == 'POST':
-        form = forms.RegisterDriverForm(request.POST)
-        if form.is_valid():
-            CNIC = form.cleaned_data.get("CNIC")
-            first_name = form.cleaned_data.get("first_name")
-            last_name = form.cleaned_data.get("last_name")
-            email = form.cleaned_data.get("email")
-            contact_number = form.cleaned_data.get("contact_number")
-            address = form.cleaned_data.get("address")
-            hourly_rate = form.cleaned_data.get("hourly_rate")
-
-            controller.add_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)
-            messages.success(request, f'Driver added successfully!')
-            return redirect('agency-register-driver')
-    else:
-        form = forms.RegisterDriverForm()
-    return render(request,'agency/register_driver.html',{'form': form})
-
-@login_required
 @user_passes_test(lambda u: u.is_superuser)
 def delete_driver(request):
     if request.method == 'POST':
@@ -285,36 +346,29 @@ def delete_driver(request):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def receive_car(request,pk):
-    selected_booking = controller.bookings.get_booking(pk)
-    selected_invoice = controller.invoices.get_invoice(pk)
-    if selected_invoice.payment == None:
-        messages.warning(request,f'Payment corresponding to Invoice ID: {selected_invoice.id} has not been made!')
-        return redirect('agency-bookings-list')
+def search_driver(request):
+    if request.method == 'POST':
+        search_form = forms.SearchDriverForm(request.POST)
+        if search_form.is_valid():
+            CNIC = search_form.cleaned_data["CNIC"]
+            try:
+                searched_driver = controller.drivers.get_driver(CNIC)
+                messages.success(request, f'Driver found!')
+                return HttpResponseRedirect("driver/{CNIC}/".format(CNIC= searched_driver.CNIC))
+            except Exception as exc:
+                messages.warning(request, f'{exc}')
+                return redirect('agency-search-driver')
     else:
-        if request.method == 'POST':
-            rental_form = forms.RentalCarForm(request.POST)
-            if rental_form.is_valid():
-                allocated_booking = selected_booking
-                date_of_delivery = rental_form.cleaned_data.get("date_of_delivery")
-                try:
-                    controller.receive_car(allocated_booking,date_of_delivery)
-                except Exception as exc:
-                    messages.warning(request,f'{exc}')
-                    return redirect('agency-receive-car',pk)
-                messages.success(request,f'Car Delivered Successfully!')
-                return redirect('agency-receive-car',pk)
-            else:
-                messages.warning(request,f'Validation error')
-                return redirect('agency-receive-car',pk)
+        search_form = forms.SearchDriverForm()
+        return render(request,'agency/search_driver.html',{'search_form': search_form})
 
-        else:
-            rental_form = forms.RentalCarForm()
-            context = {
-                'booking': selected_booking,
-                'rental_form': rental_form
-            }
-            return render(request,'agency/receive_car.html',context)
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def manage_drivers(request):
+    return render(request, 'agency/manage_drivers.html')
+
+
+# INVOICE FUNCTIONS
 
 @login_required
 def create_invoice(request,pk):
@@ -335,6 +389,7 @@ def create_invoice(request,pk):
             messages.warning(request,f'{exc}')
             return redirect('agency-home')
 
+
 @login_required
 def show_invoices(request):
     invoices = controller.invoices.get_invoices(request.user)
@@ -343,31 +398,9 @@ def show_invoices(request):
     }
     return render(request,'agency/invoices_list.html',context)
 
-@login_required
-def delete_booking(request,pk):
-    is_deleted = controller.invoices.delete_invoice(pk)
-    if is_deleted == True:
-        messages.success(request,f'Deleted Booking and Invoice successfully!')
-    else:
-        messages.info(request,f'Booking does not exist!')
-    return redirect('agency-home')
 
-@login_required
-def payment_choice(request,pk):
-    if request.method == 'POST':
-        payment_choice_form = forms.PaymentOptionForm(request.POST)
-        if payment_choice_form.is_valid():
-            payment_option = payment_choice_form.cleaned_data.get("payment_option")
-            return redirect('agency-make-payment',pk,payment_option)
-        else:
-            messages.warning(request,f'Error, could not select payment option')
-            return redirect('agency-payment-choice',pk)
-    else:
-        payment_choice_form = forms.PaymentOptionForm()
-        context = {
-            'payment_choice_form':payment_choice_form
-        }
-        return render(request,'agency/payment_choice.html',context)
+# PAYMENT FUNCTIONS
+
 
 @login_required
 def make_payment(request,pk,payment_option):
@@ -413,35 +446,26 @@ def make_payment(request,pk,payment_option):
             }
             return render(request,'agency/make_payment.html',context)
 
+
+
 @login_required
-@user_passes_test(lambda u: u.is_superuser)
-def return_car(request,pk):
-    selected_rental = controller.rentals.get_rental(pk)
+def payment_choice(request,pk):
     if request.method == 'POST':
-        return_car_form = forms.ReturnCarForm(request.POST)
-        if return_car_form.is_valid():
-            accident_details = return_car_form.cleaned_data.get("accident_details")
-            damages = return_car_form.cleaned_data.get("damages")
-            damages_amount = return_car_form.cleaned_data.get("damages_amount")
-            return_date = return_car_form.cleaned_data.get("return_date")
-            try:
-                car_return = controller.return_car(pk,accident_details,damages,damages_amount,return_date)
-                totalAmount = car_return.fine.late_return_amount + car_return.fine.damages_amount
-            except Exception as exc:
-                messages.warning(request,f'{exc}')
-                return redirect('agency-return-car',pk)
-            messages.success(request,f'Car Returned Successfully!')
-            return render(request,'agency/car_returned.html',{'car_return':car_return,'totalAmount':totalAmount})
+        payment_choice_form = forms.PaymentOptionForm(request.POST)
+        if payment_choice_form.is_valid():
+            payment_option = payment_choice_form.cleaned_data.get("payment_option")
+            return redirect('agency-make-payment',pk,payment_option)
         else:
-            messages.warning(request,f'Error in Validation!')
-            return redirect('agency-return-car',pk)
+            messages.warning(request,f'Error, could not select payment option')
+            return redirect('agency-payment-choice',pk)
     else:
-        return_car_form = forms.ReturnCarForm()
+        payment_choice_form = forms.PaymentOptionForm()
         context = {
-            'return_car_form':return_car_form,
-            'rental':selected_rental,
+            'payment_choice_form':payment_choice_form
         }
-        return render(request,'agency/return_car.html',context)
+        return render(request,'agency/payment_choice.html',context)
+
+# RETURN CAR FUNCTIONS
 
 @login_required
 def show_returns(request):

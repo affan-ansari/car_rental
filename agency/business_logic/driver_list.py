@@ -27,7 +27,7 @@ class DriverList:
             return False
 
     def update_driver(self,CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
-        update_driver = DRIVER.objects.get(CNIC=CNIC)
+        update_driver = self.get_driver(CNIC)
         update_driver.CNIC = CNIC
         update_driver.first_name = first_name.title()
         update_driver.last_name = last_name.title()

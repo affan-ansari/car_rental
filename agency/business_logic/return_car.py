@@ -1,7 +1,7 @@
 from ..models import RETURNCAR,RENTAL
 from django.core.exceptions import ObjectDoesNotExist
 
-class ReturnCar:
+class ReturnCarList:
     def __init__(self):
         pass
 

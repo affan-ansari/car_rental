@@ -2,6 +2,7 @@ from .booking import Booking
 from ..models import BOOKING
 from ..models import CAR
 from ..models import DRIVER
+from .driver_list import DriverList
 from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -25,9 +26,10 @@ class BookingLog:
         if start_date_time >= end_date_time:
             raise Exception("Invalid dates! Start Date must be less than End Date!")
         allocated_driver = None
+        
         #Check if driver available on those selected Dates.....
         if is_driver_needed == True:
-            available_drivers = DRIVER.objects.filter(available = True)
+            available_drivers = DriverList().get_drivers()
             for driver in available_drivers:
                 current_bookings = BOOKING.objects.filter(
                 Q(allocated_driver_id=driver.CNIC) &

@@ -1,5 +1,6 @@
 from .rental import Rental
 from ..models import RENTAL
+from .booking_log import *
 from django.core.exceptions import ObjectDoesNotExist
 
 class RentalLog:
@@ -26,7 +27,8 @@ class RentalLog:
             rentals = RENTAL.objects.filter(booking__customer = user)
             return rentals
 
-    def create_rental(self,booking,date_of_delivery):
+    def create_rental(self,booking_id,date_of_delivery):
+        booking = BookingLog().get_booking(booking_id)
         if date_of_delivery >= booking.start_date_time and date_of_delivery < booking.end_date_time:
             new_rental = RENTAL(
                 booking=booking,

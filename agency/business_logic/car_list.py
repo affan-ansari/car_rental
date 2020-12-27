@@ -34,7 +34,8 @@ class CarList:
         except ObjectDoesNotExist:
             return False
 
-    def update_car(self,searched_car,color,fuel,image,fare,accident_details):
+    def update_car(self,reg_no,color,fuel,image,fare,accident_details):
+        searched_car = self.get_car(reg_no)
         searched_car.color = color.capitalize()
         searched_car.fuel = fuel
         searched_car.image = image
