@@ -62,20 +62,7 @@ class CarList:
         car.accident_details = accident_details
         car.save()
         
-    def get_filtered_cars(self,max_fare,color,fuel,body_type,max_engine_capacity,transmission):
-        if max_fare == None:
-            max_fare = 10000
-        if max_engine_capacity == None:
-            max_engine_capacity = 10000
-        if color == '':
-            filtered_cars = CAR.objects.filter(
-                fare__car_fare__lte=max_fare,fuel=fuel,
-                car_model__body_type=body_type,car_model__transmission=transmission
-            )
-            return filtered_cars
-        else:
-            filtered_cars = CAR.objects.filter(
-                fare__car_fare__lte=max_fare,fuel=fuel,color=color,
-                car_model__body_type=body_type,car_model__transmission=transmission
-            )
-            return filtered_cars
+    def get_filtered_cars(self,car_filter):
+        filtered_cars = car_filter.qs
+        return filtered_cars
+        
