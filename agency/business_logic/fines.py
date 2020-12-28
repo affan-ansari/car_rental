@@ -1,7 +1,5 @@
-from ..models import FINES#,LATEFINE
 from .late_fine import LateFine
 from .fine import Fine
-from django.core.exceptions import ObjectDoesNotExist
 
 class Fines:
     def __init__(self):

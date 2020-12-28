@@ -1,4 +1,4 @@
-from ..models import RETURNCAR,RENTAL
+from ..models import RETURNCAR
 from .return_car import ReturnCar
 from django.core.exceptions import ObjectDoesNotExist
 

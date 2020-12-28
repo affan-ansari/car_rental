@@ -1,6 +1,6 @@
 from .booking_log import BookingLog
 from .invoice import Invoice
-from ..models import INVOICE,BOOKING
+from ..models import INVOICE
 from .booking_log import *
 from django.core.exceptions import ObjectDoesNotExist
 

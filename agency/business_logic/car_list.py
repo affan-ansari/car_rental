@@ -1,7 +1,7 @@
 # from agency.business_logic.car_model import Car_Model
 from .car import Car
 from .car_model import Car_Model
-from ..models import CAR,CAR_MODEL
+from ..models import CAR
 from django.core.exceptions import ObjectDoesNotExist
 
 class CarList:

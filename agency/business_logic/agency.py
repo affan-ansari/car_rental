@@ -1,4 +1,4 @@
-from agency.business_logic.return_car_list import ReturnCarList
+from .return_car_list import ReturnCarList
 from .car_list import CarList
 from .driver_list import DriverList
 from .booking_log import BookingLog
