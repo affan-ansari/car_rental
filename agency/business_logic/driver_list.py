@@ -9,10 +9,7 @@ class DriverList:
     def add_driver(self, CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         first_name = first_name.title()
         last_name = last_name.title()
-        new_driver = DRIVER(
-            CNIC=CNIC,first_name=first_name,last_name=last_name,
-            email=email,contact_number=contact_number,address=address,hourly_rate=hourly_rate
-        )
+        new_driver = Driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)
         new_driver.save()
 
     def delete_driver(self,CNIC):
