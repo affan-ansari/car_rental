@@ -1,7 +1,7 @@
 from ..models import CREDIT_CARD, PAYMENT,INVOICE
 from .invoice_log import InvoiceLog
 from .payment import Payment
-from .credit_car import CreditCard
+from .credit_card import CreditCard
 from django.core.exceptions import ObjectDoesNotExist
 
 class PaymentLog:
