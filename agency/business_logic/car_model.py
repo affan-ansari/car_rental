@@ -1,7 +1,7 @@
 from ..models import CAR_MODEL
 class Car_Model:
-    def __init__(self,make,model,body_type,engine_capacity,seats,transmission):
-        new_car = CAR_MODEL(
+    def __new__(cls,make,model,body_type,engine_capacity,seats,transmission):
+        new_carmodel = CAR_MODEL(
             make=make,
             model=model,
             body_type=body_type,
@@ -9,6 +9,5 @@ class Car_Model:
             seats=seats,
             transmission=transmission
         )
-        return new_car
+        return new_carmodel
 
-    

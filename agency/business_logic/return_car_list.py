@@ -1,4 +1,5 @@
 from ..models import RETURNCAR,RENTAL
+from .return_car import ReturnCar
 from django.core.exceptions import ObjectDoesNotExist
 
 class ReturnCarList:
@@ -9,14 +10,10 @@ class ReturnCarList:
         if return_date <= selected_rental.booking.end_date_time:
             fine.late_return_amount = 0
             fine.save()
-        new_returncar = RETURNCAR(
-            rental=selected_rental,
-            fine = fine,
-            return_date=return_date,
-            )
+        new_returncar = ReturnCar(selected_rental,fine,return_date)
         new_returncar.save()
         return new_returncar
-    
+
     def get_returns(self,user):
         if user.is_superuser:
             returns = RETURNCAR.objects.all()

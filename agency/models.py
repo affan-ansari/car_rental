@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.fields.related import ManyToManyField
 from django.urls import reverse
 from PIL import Image
-from .business_logic.car import Car
+# from .business_logic.car import Car
 from users.models import User
 
 class FARE(models.Model):

@@ -26,7 +26,7 @@ class BookingLog:
         if start_date_time >= end_date_time:
             raise Exception("Invalid dates! Start Date must be less than End Date!")
         allocated_driver = None
-        
+
         #Check if driver available on those selected Dates.....
         if is_driver_needed == True:
             available_drivers = DriverList().get_drivers()

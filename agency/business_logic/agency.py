@@ -38,7 +38,7 @@ class Agency:
 
     def update_driver(self,CNIC,first_name,last_name,email,contact_number,address,hourly_rate):
         self.drivers.update_driver(CNIC,first_name,last_name,email,contact_number,address,hourly_rate)
-    
+
     def delete_driver(self,CNIC):
         return self.drivers.delete_driver(CNIC)
 
@@ -56,7 +56,7 @@ class Agency:
 
     def make_payment(self,booking_id,amount,payment_date,card_number='',code='',expiry_date=timezone.now()):
         self.payments.create_payment(booking_id,amount,payment_date,card_number,code,expiry_date)
-    
+
     def create_invoice(self,booking_id):
         return self.invoices.create_invoice(booking_id)
 

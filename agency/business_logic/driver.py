@@ -1,6 +1,6 @@
 from ..models import DRIVER
 class Driver:
-    def __init__(self, CNIC,first_name,last_name,email,contact_number,address,hourly_rate ):
+    def __new__(cls, CNIC,first_name,last_name,email,contact_number,address,hourly_rate ):
         new_driver = DRIVER(
             CNIC=CNIC,
             first_name=first_name,

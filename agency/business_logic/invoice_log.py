@@ -1,4 +1,5 @@
-from agency.business_logic.booking import Booking
+from .booking_log import BookingLog
+from .invoice import Invoice
 from ..models import INVOICE,BOOKING
 from .booking_log import *
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,10 +10,9 @@ class InvoiceLog:
 
     def create_invoice(self,booking_id):
         booking = BookingLog().get_booking(booking_id)
-        new_invoice = INVOICE() 
-        new_invoice.booking = booking
-        new_invoice.days_booked = (booking.end_date_time - booking.start_date_time).days + 1
-        new_invoice.totalAmount = new_invoice.days_booked * booking.allocated_car.fare.car_fare
+        days_booked = (booking.end_date_time - booking.start_date_time).days + 1
+        totalAmount = days_booked * booking.allocated_car.fare.car_fare
+        new_invoice = Invoice(booking,days_booked,totalAmount)
         new_invoice.save()
         return new_invoice
 
@@ -30,7 +30,7 @@ class InvoiceLog:
         else:
             invoices = INVOICE.objects.filter(booking__customer = user)
             return invoices
-            
+
     def delete_invoice(self,invoice_id):
         try:
             invoice = INVOICE.objects.get(id=invoice_id)

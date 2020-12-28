@@ -1,4 +1,9 @@
+from ..models import RENTAL
+
 class Rental:
-    def __init__(self,booking,date_of_delivery):
-        pass
-    #Please visit models.py to see Class.
+    def __new__(cls,booking,date_of_delivery):
+        new_rental = RENTAL(
+            booking=booking,
+            date_of_delivery=date_of_delivery
+        )
+        return new_rental
