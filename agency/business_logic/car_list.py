@@ -1,3 +1,4 @@
+from agency.business_logic.car_model import Car_Model
 from .car import Car
 from ..models import CAR,CAR_MODEL
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,15 +10,12 @@ class CarList:
     def add_car(self,car_model,reg_no,color,fuel,fare,image):
         reg_no = reg_no.upper()
         color = color.capitalize()
-        new_car = CAR(car_model=car_model,reg_no=reg_no,color=color,fuel=fuel,fare=fare,image=image)
+        new_car = Car(car_model,reg_no,color,fuel,fare,image)
         new_car.save()
 
     def add_carmodel(self,make,model,body_type,engine_capacity,seats,transmission):
         make = make.title()
-        new_carmodel = CAR_MODEL(
-            make=make,model=model,body_type=body_type,
-            engine_capacity=engine_capacity,seats=seats,transmission=transmission
-        )
+        new_carmodel = Car_Model(make,model,body_type,engine_capacity,seats,transmission)
         new_carmodel.save()
 
     def delete_car(self,reg_no):
